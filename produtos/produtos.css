@@ -64,49 +64,7 @@ body { background: var(--white); color: var(--text); overflow-x: hidden; }
 }
 
 /* RESPONSIVO */
-@media (max-width: 1024px) {
-    .btn-mobile { 
-        display: block; /* Aparece no celular */
-    }
 
-    #mobile-menu { 
-        display: none; /* Esconde o menu padrão */
-        position: absolute; 
-        top: 80px; /* Logo abaixo da navbar */
-        left: 0; 
-        width: 100%; 
-        background: white; 
-        padding: 20px; 
-        border-bottom: 2px solid var(--primary);
-        box-shadow: 0 10px 15px rgba(0,0,0,0.1);
-        z-index: 999;
-    }
-
-    /* Quando clicar, ele aparece descendo */
-    #mobile-menu.active { 
-        display: block; 
-        animation: slideDown 0.3s ease-out;
-    }
-
-    .nav-links { 
-        flex-direction: column; 
-        gap: 15px; 
-        text-align: center;
-    }
-
-    .nav-links a {
-        display: block;
-        padding: 10px;
-        font-size: 1.1rem;
-    }
-
-    /* Ajustes do Catálogo para Celular */
-    .promo-grid { grid-template-columns: repeat(2, 1fr); gap: 10px; }
-    .catalogo-layout { flex-direction: column; }
-    .sidebar { width: 100%; }
-    .filtros-lista { display: flex; flex-direction: row; overflow-x: auto; gap: 10px; padding-bottom: 10px; }
-    .filter-btn { white-space: nowrap; padding: 10px 20px; }
-}
 
 @keyframes slideDown {
     from { opacity: 0; transform: translateY(-10px); }
@@ -199,3 +157,157 @@ body { background: var(--white); color: var(--text); overflow-x: hidden; }
 }
 
 .logo img { height: 50px; }
+
+
+/* ============================================================
+   VARIÁVEIS E BASE (MANTIDOS)
+   ============================================================ */
+:root {
+    --primary: #27ae60;
+    --dark: #0f172a;
+    --text: #475569;
+    --light: #f8fafc;
+    --white: #ffffff;
+    --transition: 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+* { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Plus Jakarta Sans', sans-serif; }
+body { background: var(--white); color: var(--text); overflow-x: hidden; }
+.container { max-width: 1200px; margin: 0 auto; padding: 0 25px; }
+
+/* NAVBAR */
+.navbar {
+    background: rgba(255, 255, 255, 0.95);
+    backdrop-filter: blur(10px);
+    height: 80px;
+    position: sticky;
+    top: 0; z-index: 1000;
+    display: flex; align-items: center;
+    border-bottom: 1px solid rgba(0,0,0,0.05);
+}
+.nav-wrapper { display: flex; justify-content: space-between; align-items: center; width: 100%; }
+.logo img { height: 50px; }
+
+/* MENU DESKTOP */
+.nav-links { display: flex; list-style: none; gap: 30px; }
+.nav-links a { text-decoration: none; color: var(--dark); font-weight: 700; transition: var(--transition); font-size: 0.9rem; }
+.nav-links a.active { color: var(--primary); }
+
+/* BOTÃO MOBILE (HAMBURGUER) */
+.btn-mobile { 
+    display: none; 
+    background: none; 
+    border: none; 
+    cursor: pointer; 
+    padding: 10px; 
+    z-index: 1001;
+}
+#hamburger { 
+    display: block; 
+    width: 25px; 
+    border-top: 2px solid var(--dark); 
+    position: relative; 
+}
+#hamburger::after, #hamburger::before { 
+    content: ''; 
+    display: block; 
+    width: 25px; 
+    height: 2px; 
+    background: var(--dark); 
+    margin-top: 6px; 
+    transition: 0.3s; 
+}
+
+/* ============================================================
+   LAYOUT DO CATÁLOGO (PRODUTOS)
+   ============================================================ */
+.promo-grid { 
+    display: grid; 
+    grid-template-columns: repeat(4, 1fr); 
+    gap: 20px; 
+}
+
+.promo-card { 
+    background: white; 
+    border-radius: 18px; 
+    border: 1px solid #eee; 
+    display: flex; 
+    flex-direction: column; 
+    transition: var(--transition);
+    height: 100%; /* Garante altura igual no grid */
+}
+
+.promo-img { 
+    height: 180px; 
+    width: calc(100% - 30px);
+    margin: 15px;
+    background-size: contain; 
+    background-repeat: no-repeat; 
+    background-position: center; 
+}
+
+.p-content { padding: 15px; flex-grow: 1; display: flex; flex-direction: column; }
+
+/* ============================================================
+   RESPONSIVO ORGANIZADO (MOBILE)
+   ============================================================ */
+@media (max-width: 1024px) {
+    /* 1. Navbar e Menu Mobile */
+    .btn-mobile { display: block; }
+    
+    .header-right .btn-primary-mini { display: none; } /* Esconde o botão extra no mobile para limpar o topo */
+
+    #mobile-menu { 
+        display: none;
+        position: absolute; 
+        top: 80px; 
+        left: 0; 
+        width: 100%; 
+        background: white; 
+        padding: 20px; 
+        box-shadow: 0 10px 15px rgba(0,0,0,0.1);
+        z-index: 999;
+    }
+
+    #mobile-menu.active { display: block; animation: slideDown 0.3s ease-out; }
+
+    .nav-links { flex-direction: column; gap: 10px; text-align: center; }
+
+    /* 2. Filtros Laterais (Virão horizontal) */
+    .catalogo-layout { flex-direction: column; gap: 20px; }
+    .sidebar { width: 100%; }
+    .filtros-lista { 
+        display: flex; 
+        flex-direction: row; 
+        overflow-x: auto; 
+        gap: 10px; 
+        padding-bottom: 10px;
+        -webkit-overflow-scrolling: touch;
+    }
+    .filter-btn { white-space: nowrap; padding: 10px 20px; flex-shrink: 0; }
+
+    /* 3. CORREÇÃO DOS CARDS (O PONTO QUE VOCÊ PEDIU) */
+    .promo-grid { 
+        grid-template-columns: 1fr; /* 1 card por linha para não ficar "curto e feio" */
+        gap: 20px; 
+    }
+
+    .promo-card {
+        max-width: 100%;
+        margin: 0 auto;
+    }
+
+    .promo-img { 
+        height: 250px; /* Aumenta a foto no mobile para dar destaque */
+        width: auto;
+    }
+
+    .p-content h3 { height: auto; font-size: 1.1rem; } /* Título respira melhor */
+    
+    .qty-control { padding: 10px; } /* Botões de quantidade maiores para o dedo */
+}
+
+@keyframes slideDown {
+    from { opacity: 0; transform: translateY(-10px); }
+    to { opacity: 1; transform: translateY(0); }
+}
