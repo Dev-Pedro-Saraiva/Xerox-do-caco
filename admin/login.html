@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Acesso Administrativo | Peniel</title>
+    <link rel="stylesheet" href="style.css">
+    <style>
+        .auth-box { max-width: 400px; margin: 80px auto; padding: 30px; background: #1e1e1e; border-radius: 12px; border: 1px solid #333; text-align: center; }
+        .auth-box h2 { color: #ffcc00; margin-bottom: 20px; }
+        .auth-box input { width: 100%; padding: 12px; margin: 10px 0; background: #121212; border: 1px solid #444; color: #fff; border-radius: 6px; }
+        .btn-auth { width: 100%; padding: 12px; background: #ffcc00; border: none; border-radius: 6px; font-weight: bold; cursor: pointer; margin-top: 10px; }
+        .toggle-link { margin-top: 15px; display: block; color: #888; cursor: pointer; font-size: 0.9rem; }
+        .toggle-link span { color: #ffcc00; text-decoration: underline; }
+    </style>
+</head>
+<body>
+    <div class="auth-box">
+        <h2 id="auth-title">Fazer Login</h2>
+        <form id="auth-form">
+            <input type="email" id="email" placeholder="Seu e-mail" required>
+            <input type="password" id="password" placeholder="Sua senha" required>
+            <button type="submit" id="btn-submit" class="btn-auth">Entrar</button>
+        </form>
+        <p class="toggle-link" id="toggle-auth">Não tem conta? <span>Cadastre-se</span></p>
+    </div>
+
+    <script type="module" src="auth.js"></script>
+</body>
+</html>

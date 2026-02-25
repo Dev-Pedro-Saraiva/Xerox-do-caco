@@ -1,0 +1,114 @@
+@import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;800&display=swap');
+
+:root {
+    --primary: #27ae60;
+    --dark: #0f172a;
+    --text: #475569;
+    --bg: #f8fafc;
+    --white: #ffffff;
+    --zap: #25d366;
+}
+
+* { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Plus Jakarta Sans', sans-serif; }
+body { background: var(--bg); color: var(--text); overflow-x: hidden; }
+.container { max-width: 1200px; margin: 0 auto; padding: 0 25px; }
+
+/* NAVBAR */
+.navbar { 
+    background: var(--white); 
+    height: 80px; 
+    display: flex; 
+    align-items: center; 
+    position: sticky; 
+    top: 0; 
+    z-index: 1000; 
+    border-bottom: 1px solid rgba(0,0,0,0.05);
+}
+.nav-wrapper { display: flex; justify-content: space-between; align-items: center; width: 100%; }
+.logo { font-size: 1.4rem; font-weight: 800; color: var(--dark); }
+.logo span { color: var(--primary); }
+
+.nav-links { display: flex; list-style: none; gap: 30px; }
+.nav-links a { text-decoration: none; color: var(--dark); font-weight: 700; font-size: 0.9rem; transition: 0.3s; }
+.nav-links a.active, .nav-links a:hover { color: var(--primary); }
+
+/* MENU MOBILE (CORTINA) */
+#btn-mobile { display: none; background: none; border: none; cursor: pointer; padding: 10px; }
+#hamburger { display: block; width: 22px; border-top: 2px solid var(--dark); position: relative; }
+#hamburger::after, #hamburger::before { content: ''; display: block; width: 22px; height: 2px; background: var(--dark); margin-top: 5px; transition: 0.3s; }
+
+@media (max-width: 768px) {
+    #btn-mobile { display: block; }
+    .nav-links { 
+        display: none; 
+        position: absolute; 
+        top: 80px; 
+        left: 0; 
+        width: 100%; 
+        background: var(--white); 
+        flex-direction: column; 
+        padding: 40px 20px; 
+        text-align: center; 
+        border-bottom: 4px solid var(--primary);
+        box-shadow: 0 10px 20px rgba(0,0,0,0.05);
+        z-index: 999;
+    }
+    #nav.active .nav-links { display: flex; animation: slideDown 0.4s ease; }
+}
+
+@keyframes slideDown {
+    from { opacity: 0; transform: translateY(-10px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+/* CONTEÚDO */
+.section { padding: 60px 0; }
+.empresa-intro { display: grid; grid-template-columns: 1fr 1fr; gap: 40px; align-items: center; }
+
+.empresa-img-container img { 
+    width: 100%; 
+    border-radius: 20px; 
+    box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+}
+
+.titulo-pagina { font-size: 2.5rem; color: var(--dark); font-weight: 800; margin-bottom: 20px; }
+.titulo-pagina span { color: var(--primary); }
+.empresa-texto p { line-height: 1.8; margin-bottom: 20px; text-align: justify; }
+
+.empresa-stats { 
+    background: var(--white); 
+    padding: 20px; 
+    border-left: 4px solid var(--primary); 
+    border-radius: 12px; 
+    margin-bottom: 30px;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.02);
+}
+.stat strong { display: block; font-size: 0.8rem; text-transform: uppercase; color: var(--primary); margin-bottom: 5px; }
+.stat span { color: var(--dark); font-weight: 600; }
+
+.btn-zap-empresa { 
+    display: inline-block; 
+    background: var(--zap); 
+    color: white; 
+    padding: 15px 30px; 
+    border-radius: 50px; 
+    text-decoration: none; 
+    font-weight: 800; 
+    transition: 0.3s; 
+}
+.btn-zap-empresa:hover { transform: translateY(-3px); box-shadow: 0 10px 20px rgba(37,211,102,0.3); }
+
+/* MAPA */
+.mapa-section { margin-top: 80px; text-align: center; }
+.section-title { font-size: 2rem; color: var(--dark); margin-bottom: 20px; }
+.section-title span { color: var(--primary); }
+.google-maps iframe { width: 100%; height: 400px; border-radius: 20px; border: none; box-shadow: 0 10px 30px rgba(0,0,0,0.05); }
+
+@media (max-width: 900px) {
+    .empresa-intro { grid-template-columns: 1fr; }
+    .titulo-pagina { font-size: 2rem; text-align: center; }
+}
+
+.footer { padding: 40px 0; text-align: center; color: var(--text); border-top: 1px solid #eee; margin-top: 40px; }
+
+.logo img { height: 50px; }

@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Catálogo Profissional | Xerox do caco</title>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="produtos.css">
+</head>
+<body>
+
+<header class="navbar">
+   <div class="container nav-wrapper">
+        <a href="index.html" class="logo">
+            <img src="https://i.postimg.cc/5td7pqXy/logo-photp-(1).png" alt="Logo Xerox do caco">
+        </a>
+        
+        <nav id="mobile-menu">
+            <ul class="nav-links">
+                <li><a href="../index.html">Home</a></li>
+                <li><a href="index.html" class="active">Produtos</a></li>
+                <li><a href="../empresa/index.html">Empresa</a></li>
+            </ul>
+        </nav>
+
+        <div class="header-right">
+            <button id="cart-icon-btn" class="btn-primary-mini">
+                🛒 <span id="cart-count">0</span>
+            </button>
+            <button id="btn-mobile" class="btn-mobile" aria-label="Abrir Menu">
+                <span id="hamburger"></span>
+            </button>
+        </div>
+    </div>
+</header>
+    <main class="container section">
+        <div class="catalogo-layout">
+            <aside class="sidebar">
+                <div class="sidebar-sticky">
+                    <h3 class="sidebar-title">Categorias</h3>
+                    <div id="filtros-principais" class="filtros-lista">
+                        </div>
+                    
+                    <div id="sub-filtros-container" class="sub-filtros-box"></div>
+                </div>
+            </aside>
+
+            <section class="conteudo">
+                <h1 class="section-title">Nosso <span>Catálogo</span></h1>
+                <div id="grid-produtos" class="promo-grid">
+                    </div>
+            </section>
+        </div>
+    </main>
+
+    <div id="cart-overlay" class="cart-overlay"></div>
+    <aside id="cart-sidebar" class="cart-sidebar">
+        <div class="cart-header">
+            <h3>Seu Pedido</h3>
+            <button id="close-cart">✕</button>
+        </div>
+        <div id="cart-items" class="cart-items-list"></div>
+        <div class="cart-footer">
+            <div class="total-row">
+                <span>Total:</span>
+                <span id="cart-total-value">R$ 0,00</span>
+            </div>
+            <button id="checkout-whatsapp" class="btn-whatsapp-hero" style="width: 100%; justify-content: center; background: #25d366; border: none;">
+                Finalizar no WhatsApp
+            </button>
+        </div>
+    </aside>
+
+    <script type="module" src="filtro.js"></script>
+</body>
+</html>

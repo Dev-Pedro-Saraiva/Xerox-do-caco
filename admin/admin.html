@@ -1,0 +1,239 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Painel Peniel | Gerenciar Loja</title>
+    <link rel="stylesheet" href="../style.css">
+    <style>
+        :root {
+            --fundo-admin: #f0f2f5;
+            --verde-esmeralda: #27ae60;
+            --verde-zap: #25d366;
+            --texto-dark: #2d3436;
+            --branco-puro: #ffffff;
+            --borda-suave: #dfe6e9;
+            --vermelho-promo: #ff4757;
+            --azul-edit: #3498db;
+        }
+
+        body { background: var(--fundo-admin); color: var(--texto-dark); font-family: 'Segoe UI', sans-serif; margin: 0; }
+        .admin-main { padding: 20px; max-width: 1000px; margin: auto; }
+        
+        .header-admin {
+            display: flex; justify-content: space-between; align-items: center;
+            background: var(--branco-puro); padding: 15px 25px; border-radius: 12px;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.05); margin-bottom: 30px;
+        }
+
+        .section-title {
+            margin: 40px 0 20px 0; padding-bottom: 10px; border-bottom: 2px solid var(--borda-suave);
+            display: flex; align-items: center; gap: 10px; color: var(--texto-dark);
+        }
+
+        .card-admin {
+            background: var(--branco-puro); padding: 25px; border-radius: 12px;
+            border: 1px solid var(--borda-suave); margin-bottom: 20px;
+        }
+
+        .flex-row { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+        @media (max-width: 768px) { .flex-row { grid-template-columns: 1fr; } }
+
+        label { display: block; margin-bottom: 4px; font-size: 0.75rem; font-weight: 700; text-transform: uppercase; color: #636e72; }
+        input, select, textarea {
+            width: 100%; padding: 12px; margin-bottom: 15px; border: 1px solid var(--borda-suave);
+            border-radius: 8px; outline: none; font-size: 0.95rem; box-sizing: border-box;
+        }
+        
+        .btn-save {
+            width: 100%; padding: 14px; background: var(--verde-esmeralda); color: #fff;
+            border: none; border-radius: 8px; font-weight: bold; cursor: pointer; text-transform: uppercase;
+        }
+
+        .btn-edit { background: var(--azul-edit); color: white; border: none; border-radius: 4px; padding: 4px 8px; cursor: pointer; margin-right: 5px; }
+
+        .cat-item-admin { 
+            display: flex; align-items: center; justify-content: space-between; 
+            background: #f8f9fa; padding: 10px; border-radius: 8px; margin-bottom: 5px; border: 1px solid #eee;
+        }
+        .sub-item-admin { margin-left: 30px; border-left: 3px solid var(--azul-edit); background: #fff; }
+
+        .dynamic-field-group { display: flex; gap: 5px; margin-bottom: 10px; }
+        .btn-remove-field { background: #ff4757; color: white; border: none; border-radius: 8px; padding: 0 15px; cursor: pointer; }
+        
+        .multi-select-area {
+            border: 1px solid var(--borda-suave); border-radius: 8px; padding: 10px;
+            max-height: 200px; overflow-y: auto; background: #fafafa; margin-bottom: 15px;
+        }
+
+        .sub-container { border-left: 2px solid var(--verde-esmeralda); padding-left: 15px; margin-top: 5px; margin-bottom: 10px; }
+
+        .checkbox-label {
+            display: flex; align-items: center; gap: 8px; font-weight: normal;
+            text-transform: none; color: var(--texto-dark); cursor: pointer; margin-bottom: 5px;
+        }
+        .checkbox-label input { width: auto; margin: 0; }
+
+        .scroll-list { max-height: 400px; overflow-y: auto; padding-right: 5px; }
+        .item-row-admin {
+            display: flex; align-items: center; gap: 15px; padding: 12px;
+            background: #f8f9fa; border-radius: 10px; margin-bottom: 10px; border: 1px solid #eee;
+        }
+        .item-row-admin img { width: 50px; height: 50px; object-fit: cover; border-radius: 6px; }
+        .info { flex: 1; }
+    </style>
+</head>
+<body>
+
+    <div class="admin-main">
+        <header class="header-admin">
+            <h1>Painel <span>Peniel</span></h1>
+            <div style="display: flex; gap: 15px;">
+                <a href="../index.html" style="text-decoration:none; color: var(--verde-esmeralda); font-weight:bold;">Ver Site ↗</a>
+                <button id="btn-logout" style="cursor:pointer; background:none; border:none; color:#d63031; font-weight:bold;">Sair</button>
+            </div>
+        </header>
+
+        <h2 class="section-title">🏢 Perfil da Empresa</h2>
+        <div class="card-admin" style="border-left: 5px solid var(--verde-zap);">
+            <form id="empresa-form">
+                <div class="flex-row">
+                    <div>
+                        <label>URL Foto da Fachada</label>
+                        <input type="text" id="emp-foto" placeholder="https://link-da-foto.jpg">
+                        <label>WhatsApp (DDD + Número)</label>
+                        <input type="number" id="emp-zap" placeholder="Ex: 21999999999">
+                    </div>
+                    <div>
+                        <label>Sobre a Empresa</label>
+                        <textarea id="emp-sobre" style="height: 105px;" placeholder="Conte um pouco sobre a loja..."></textarea>
+                    </div>
+                </div>
+                <label>Código do Google Maps (Iframe):</label>
+                <textarea id="emp-mapa" placeholder='Cole aqui o código <iframe...> fornecido pelo Google Maps'></textarea>
+                <button type="submit" class="btn-save" style="background:var(--verde-zap);">Atualizar Perfil</button>
+            </form>
+        </div>
+
+        <h2 class="section-title">🔥 Gestão de Promoções</h2>
+        <div class="flex-row">
+            <div class="card-admin" style="border-left: 5px solid var(--vermelho-promo);">
+                <form id="promo-form">
+                    <label>Nome do Produto em Promoção</label>
+                    <input type="text" id="promo-name" placeholder="Ex: Cimento CP-II 50kg" required>
+                    <div style="display:flex; gap:10px;">
+                        <div style="flex:1"><label>Preço Antigo</label><input type="number" step="0.01" id="promo-old-price"></div>
+                        <div style="flex:1"><label>Preço Promo</label><input type="number" step="0.01" id="promo-new-price"></div>
+                    </div>
+                    <label>Link da Imagem</label>
+                    <input type="text" id="promo-img-url">
+                    <button type="submit" class="btn-save" style="background: var(--vermelho-promo);">Lançar Promoção</button>
+                </form>
+            </div>
+            <div class="card-admin">
+                <label>Promoções Ativas</label>
+                <div id="list-promos-admin" class="scroll-list"></div>
+            </div>
+        </div>
+
+        <h2 class="section-title">📦 Gestão do Catálogo</h2>
+        <div class="card-admin">
+            <h3 id="form-title">🏗️ Adicionar Produto</h3>
+            <form id="product-form">
+                <div class="flex-row">
+                    <div>
+                        <label>Nome do Produto</label>
+                        <input type="text" id="prod-name" required>
+                        <label>Categorias e Subcategorias</label>
+                        <div id="prod-categories-container" class="multi-select-area"></div>
+                        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
+                            <div><label>Preço Base</label><input type="number" step="0.01" id="prod-price" required></div>
+                            <div><label>Ordem na Fila</label><input type="number" id="prod-order" value="99"></div>
+                        </div>
+                    </div>
+                    <div>
+                        <label>Imagens</label>
+                        <div id="prod-imgs-container">
+                            <div class="dynamic-field-group">
+                                <input type="text" class="prod-img-input" placeholder="URL da Imagem 1" required>
+                            </div>
+                        </div>
+                        <button type="button" id="btn-add-img-field" style="width:100%; padding:8px; margin-bottom:15px; cursor:pointer; background:#eee; border:1px solid #ccc; border-radius:8px;">+ Outra Imagem</button>
+                        
+                        <label>Variações (Cor, Tamanho, etc.)</label>
+                        <div id="prod-variations-container"></div>
+                        <button type="button" id="btn-add-variation" style="width:100%; padding:8px; margin-bottom:15px; cursor:pointer; background:#f1f2f6; border:1px solid #ced4da; border-radius:8px; font-weight: bold;">+ Adicionar Variação</button>
+
+                        <label>Descrição</label>
+                        <textarea id="prod-desc" style="height: 105px;"></textarea>
+                    </div>
+                </div>
+                <button type="submit" class="btn-save" id="btn-submit-prod">Salvar Produto</button>
+                <button type="button" id="btn-cancel-edit" style="display:none; width:100%; margin-top:10px; padding:10px; background:#636e72; color:#fff; border:none; border-radius:8px; cursor:pointer;">Cancelar Edição</button>
+            </form>
+        </div>
+
+        <div class="card-admin">
+            <label>Produtos Cadastrados (Clique em ✏️ para editar)</label>
+            <div id="admin-product-grid" class="scroll-list"></div>
+        </div>
+
+        <h2 class="section-title">⚙️ Configurações</h2>
+        <div class="flex-row">
+            <div class="card-admin">
+                <h3>📁 Gestão de Categorias</h3>
+                <div style="background:#f9f9f9; padding:15px; border-radius:8px; margin-bottom:15px; border:1px solid #ddd;">
+                    <label>Nome da Categoria Principal</label>
+                    <input type="text" id="new-category-name" placeholder="Ex: Tintas">
+                    
+                    <label>Ou Vincular como Sub de:</label>
+                    <select id="parent-category-select"><option value="">-- Criar como Principal --</option></select>
+
+                    <label>Adicionar Subcategorias (Opcional)</label>
+                    <div id="bulk-subs-container"></div>
+                    <button type="button" id="btn-add-sub-input" style="width:100%; padding:6px; margin-bottom:15px; background:#e1f5fe; border:1px solid #b3e5fc; color:#039be5; border-radius:8px; cursor:pointer; font-weight:bold;">+ Adicionar Subcategoria</button>
+
+                    <label>Ordem</label>
+                    <input type="number" id="new-category-order" value="0">
+                    <button id="btn-add-category" class="btn-save">Salvar Tudo</button>
+                </div>
+                <div id="list-categories-admin" class="scroll-list"></div>
+            </div>
+        </div>
+    </div>
+
+    <script type="module" src="admin-db.js"></script>
+    <script>
+        // Lógica dos botões dinâmicos de IMAGEM
+        document.getElementById('btn-add-img-field').onclick = function() {
+            const container = document.getElementById('prod-imgs-container');
+            const div = document.createElement('div');
+            div.className = 'dynamic-field-group';
+            div.innerHTML = `<input type="text" class="prod-img-input" placeholder="URL da Imagem"><button type="button" class="btn-remove-field" onclick="this.parentElement.remove()">✕</button>`;
+            container.appendChild(div);
+        };
+
+        // Lógica dos botões dinâmicos de VARIAÇÃO
+        document.getElementById('btn-add-variation').onclick = function() {
+            const container = document.getElementById('prod-variations-container');
+            const div = document.createElement('div');
+            div.className = 'dynamic-field-group variation-item';
+            div.innerHTML = `
+                <input type="text" class="var-name" placeholder="Nome (ex: Azul)" style="flex:2">
+                <input type="number" step="0.01" class="var-price" placeholder="Preço (Opcional)" style="flex:1">
+                <button type="button" class="btn-remove-field" onclick="this.parentElement.remove()">✕</button>
+            `;
+            container.appendChild(div);
+        };
+
+        // Lógica dos botões dinâmicos de SUBCATEGORIA
+        document.getElementById('btn-add-sub-input').onclick = function() {
+            const container = document.getElementById('bulk-subs-container');
+            const div = document.createElement('div');
+            div.className = 'dynamic-field-group';
+            div.innerHTML = `<input type="text" class="new-sub-input" placeholder="Nome da Subcategoria"><button type="button" class="btn-remove-field" onclick="this.parentElement.remove()">✕</button>`;
+            container.appendChild(div);
+        };
+    </script>
+</body>
+</html>

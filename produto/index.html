@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Xerox do caco | Detalhes do Produto</title>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="../produtos/produtos.css">
+    <link rel="stylesheet" href="detalhe.css">
+</head>
+<body>
+    <header class="navbar">
+        <div class="container nav-wrapper">
+              <a href="index.html" class="logo">
+            <img src="https://i.postimg.cc/5td7pqXy/logo-photp-(1).png" alt="Logo Xerox do caco">
+        </a>
+            <button onclick="location.href='../produtos/index.html'" class="btn-whatsapp-hero" style="padding: 10px 20px; font-size: 0.8rem; border-color: var(--primary); color: var(--primary); background: transparent; border: 1px solid;">
+                ← Voltar aos Produtos
+            </button>
+        </div>
+    </header>
+
+    <main class="container" style="padding: 60px 0;">
+        <div id="loading" style="text-align: center; font-weight: bold; color: var(--primary); padding: 50px;">Carregando produto...</div>
+        
+        <div id="product-content" class="product-detail-grid" style="display: none;">
+            <div class="galeria-container">
+                <div id="thumbs" class="thumbs-galeria"></div>
+                <div class="main-img-wrapper">
+                    <img id="view-principal" src="" class="main-img">
+                </div>
+            </div>
+
+            <div class="info-detalhada">
+                <h1 id="detalhe-nome"></h1>
+                <p id="detalhe-desc" class="detalhe-desc"></p>
+                
+                <span class="price-tag" id="detalhe-preco"></span>
+
+                <div id="detalhe-variacoes" class="detalhe-variacoes-container"></div>
+                
+                <div class="qty-control">
+                    <button id="qty-minus">-</button>
+                    <input type="number" id="qty-detalhe" value="1" readonly>
+                    <button id="qty-plus">+</button>
+                </div>
+                
+                <button id="btn-add-detalhe" class="btn-add-pro">Adicionar ao Pedido</button>
+            </div>
+        </div>
+
+        <section class="related-section" id="related-container" style="display: none;">
+            <h2 class="section-title">Itens de <span>Interesse</span></h2>
+            <div class="promo-grid" id="related-grid"></div>
+        </section>
+    </main>
+
+    <script type="module" src="detalhe.js"></script>
+</body>
+</html>
