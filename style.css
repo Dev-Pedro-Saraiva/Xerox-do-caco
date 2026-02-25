@@ -199,39 +199,52 @@ body { background: var(--white); color: var(--text); overflow-x: hidden; }
 /* ============================================================
    ESTILOS RESPONSIVOS CORRIGIDOS (MOBILE)
    ============================================================ */
+/* ============================================================
+   ESTILOS RESPONSIVOS FINAIS (MOBILE)
+   ============================================================ */
 @media screen and (max-width: 768px) {
     
-    /* 1. Reset de segurança e Nav Visível */
-    html, body {
-        overflow-x: hidden;
-        width: 100%;
-    }
-
+    /* 1. Navbar: Logo de um lado, Hambúrguer do outro */
     .navbar {
-        position: fixed; /* Fixa o menu no topo para ele não sumir */
+        position: fixed;
         top: 0;
         left: 0;
         width: 100%;
-        height: 70px;
+        height: 75px;
         background: #ffffff;
-        z-index: 9999; /* Garante que fique acima de tudo */
+        z-index: 9999;
         display: flex;
         align-items: center;
         box-shadow: 0 2px 10px rgba(0,0,0,0.1);
     }
 
-    #btn-mobile {
-        display: flex !important; /* Força o botão hambúrguer a aparecer */
+    .nav-wrapper {
+        display: flex;
+        justify-content: space-between; /* Empurra logo pra esquerda e burger pra direita */
         align-items: center;
-        z-index: 10000;
+        width: 100%;
+        padding: 0 20px;
     }
 
-    /* Ajuste do Menu Lateral/Suspenso */
+    /* ESCONDE OS LINKS DIRETOS NO MOBILE (Evita redundância) */
+    .nav-links {
+        display: none; 
+    }
+
+    /* Botão Hambúrguer sempre visível no mobile */
+    #btn-mobile {
+        display: flex !important;
+        background: none;
+        border: none;
+        cursor: pointer;
+    }
+
+    /* Menu quando aberto pelo JS */
     #nav.active .nav-links {
         display: flex;
         flex-direction: column;
         position: fixed;
-        top: 70px;
+        top: 75px;
         left: 0;
         width: 100%;
         height: auto;
@@ -239,99 +252,72 @@ body { background: var(--white); color: var(--text); overflow-x: hidden; }
         padding: 40px 20px;
         gap: 25px;
         text-align: center;
-        box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+        border-bottom: 4px solid var(--primary);
     }
 
-    /* 2. Banner Hero (Ajustado pela Largura) */
+    /* 2. Hero Section: Imagem idêntica ao tamanho da section */
     .hero {
-        margin-top: 70px; /* Abre espaço para a navbar fixa */
-        height: auto;
-        min-height: 80vh; 
+        margin-top: 75px;
+        height: 70vh; /* Define a altura da seção */
         position: relative;
         display: flex;
         align-items: center;
         justify-content: center;
-        padding: 40px 20px;
-        text-align: center;
+        padding: 0 20px;
+        overflow: hidden;
     }
 
     .hero-img {
         position: absolute;
         top: 0;
         left: 0;
-        width: 100%; /* Adapta pela largura */
-        height: 100%;
-        object-fit: cover; /* Cobre o fundo sem distorcer */
-        z-index: -1; /* Fica atrás de tudo */
+        width: 100% !important; /* Mesma largura da section */
+        height: 100% !important; /* Mesma altura da section */
+        object-fit: cover; /* Garante que a imagem preencha o espaço sem distorcer */
+        z-index: -1;
     }
 
     .hero-overlay {
-        background: rgba(0, 0, 0, 0.6); /* Escurece a imagem para o texto aparecer */
+        position: absolute;
+        inset: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(0, 0, 0, 0.5); /* Sombra para leitura */
         z-index: 0;
     }
 
     .hero .container {
         position: relative;
-        z-index: 2; /* Texto acima da imagem e do overlay */
+        z-index: 1;
     }
 
     .hero h1 {
         font-size: 1.8rem !important;
-        color: #ffffff;
-        margin-bottom: 20px;
+        color: white;
     }
 
-    .hero-btns {
-        flex-direction: column;
-        gap: 12px;
-    }
-
-    .btn-primary, .btn-whatsapp-hero {
-        width: 100%;
-        justify-content: center;
-    }
-
-    /* 3. Ajuste de Grades (Grid para Coluna Única) */
+    /* 3. Ajuste de Grades e Conteúdo */
     .stats-wrapper,
     .promo-grid, 
     .ambientes-grid, 
     .process-grid {
         display: flex !important;
         flex-direction: column !important;
-        grid-template-columns: 1fr !important;
         gap: 20px;
     }
 
-    .stat-item {
-        margin-bottom: 20px;
-    }
-
-    .ambiente-card {
-        height: 250px;
-    }
-
-    /* 4. Painel de Detalhes */
-    .detail-content {
+    .hero-btns {
         flex-direction: column;
+        width: 100%;
+    }
+
+    .btn-primary, .btn-whatsapp-hero {
+        width: 100%;
         text-align: center;
-        gap: 20px;
-    }
-
-    .section {
-        padding: 50px 0;
-    }
-
-    .section-title {
-        font-size: 1.6rem !important;
+        justify-content: center;
     }
 }
 
-/* Telas bem pequenas */
-@media screen and (max-width: 380px) {
-    .hero h1 {
-        font-size: 1.5rem !important;
-    }
-}
 
 
 
