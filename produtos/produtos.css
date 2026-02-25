@@ -197,13 +197,17 @@ body { background: var(--white); color: var(--text); overflow-x: hidden; }
 #hamburger { display: block; width: 22px; border-top: 2px solid var(--dark); position: relative; }
 #hamburger::after, #hamburger::before { content: ''; display: block; width: 22px; height: 2px; background: var(--dark); margin-top: 6px; transition: 0.3s; }
 
+
+
 /* ============================================================
-   RESPONSIVO MOBILE (3 PRODUTOS POR LINHA)
+   RESPONSIVO MOBILE (2 PRODUTOS POR LINHA)
    ============================================================ */
 @media (max-width: 1024px) {
-    .btn-mobile { display: block; }
+    /* 1. Navbar e Menu */
+    .btn-mobile { 
+        display: block; 
+    }
     
-    /* Menu Mobile */
     #mobile-menu { 
         display: none;
         position: absolute; 
@@ -213,71 +217,93 @@ body { background: var(--white); color: var(--text); overflow-x: hidden; }
         z-index: 1100;
     }
     #mobile-menu.active { display: block; animation: slideDown 0.3s ease-out; }
-    .nav-links { flex-direction: column; gap: 10px; text-align: center; list-style: none; }
 
-    /* Carrinho Sidebar - Garantir que apareça sobre tudo */
+    /* 2. Carrinho (Garantindo que apareça sobre tudo) */
     .cart-sidebar {
-        width: 100% !important; /* Ocupa a tela toda no celular */
-        z-index: 2000 !important;
+        width: 100% !important; /* Tela cheia no celular para facilitar o uso */
+        z-index: 3000 !important; 
     }
-    .cart-overlay { z-index: 1900 !important; }
+    .cart-overlay { 
+        z-index: 2900 !important; 
+    }
 
-    /* Grid de Produtos: 3 Colunas */
+    /* 3. Grid de Produtos: 2 Colunas (Equilíbrio Perfeito) */
     .promo-grid { 
-        grid-template-columns: repeat(3, 1fr) !important; 
-        gap: 8px !important; /* Espaço reduzido para caber 3 */
-        padding: 0 5px;
+        grid-template-columns: repeat(2, 1fr) !important; 
+        gap: 12px !important; 
+        padding: 0 10px;
     }
 
     .promo-card {
-        border-radius: 10px; /* Bordas menores para ganhar espaço */
+        border-radius: 14px;
+        background: #fff;
     }
 
     .promo-img { 
-        height: 100px !important; /* Foto menor para caber no grid triplo */
-        margin: 8px;
+        height: 140px !important; /* Tamanho ideal para 2 colunas */
+        margin: 10px auto;
+        width: 90%;
     }
 
-    .p-content { padding: 8px; }
+    .p-content { 
+        padding: 12px; 
+    }
+
     .p-content h3 { 
-        font-size: 0.7rem !important; /* Texto pequeno para não quebrar */
-        line-height: 1.1;
-        height: 2.2em; 
+        font-size: 0.85rem !important; 
+        line-height: 1.2;
+        height: 2.4em; /* Mostra até 2 linhas do título */
     }
-    .p-desc { display: none; } /* Esconde a descrição no mobile para limpar o visual */
+
+    .p-desc { 
+        display: none; /* Mantém limpo, focado no título e preço */
+    }
     
-    .new-price { font-size: 0.85rem !important; margin-bottom: 5px; }
-
-    /* Botões e Controles menores para caber nos 3 cards */
-    .qty-control { gap: 4px; padding: 2px; }
-    .qty-control button { width: 20px; height: 20px; font-size: 0.7rem; }
-    .qty-control input { width: 20px; font-size: 0.7rem; }
-    .btn-add { padding: 6px; font-size: 0.65rem; border-radius: 6px; }
-
-    /* Filtros Horizontais */
-    .catalogo-layout { flex-direction: column; }
-    .sidebar { width: 100%; margin-bottom: 20px; }
-    .filtros-lista { 
-        display: flex; flex-direction: row; 
-        overflow-x: auto; gap: 8px; 
-        padding: 5px 0;
-        -webkit-overflow-scrolling: touch;
+    .new-price { 
+        font-size: 1.1rem !important; 
+        margin: 5px 0 10px 0; 
     }
-    .filter-btn { white-space: nowrap; font-size: 0.75rem; padding: 8px 12px; }
-}
 
-/* CARRINHO (Base para garantir visibilidade) */
-.cart-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.5); backdrop-filter: blur(4px); visibility: hidden; opacity: 0; transition: 0.3s; z-index: 1500; }
-.cart-overlay.active { visibility: visible; opacity: 1; }
-.cart-sidebar { position: fixed; right: -100%; top: 0; width: 380px; height: 100%; background: white; z-index: 1600; transition: 0.4s; padding: 20px; display: flex; flex-direction: column; box-shadow: -5px 0 15px rgba(0,0,0,0.1); }
-.cart-sidebar.active { right: 0; }
+    /* 4. Controles e Botões */
+    .qty-control { 
+        gap: 8px; 
+        padding: 4px; 
+        margin-bottom: 8px;
+    }
+    
+    .qty-control button { width: 25px; height: 25px; }
+    
+    .btn-add { 
+        width: 100%;
+        padding: 10px; 
+        font-size: 0.8rem; 
+        border-radius: 10px; 
+    }
+
+    /* 5. Filtros Horizontais */
+    .catalogo-layout { flex-direction: column; }
+    .sidebar { width: 100%; margin-bottom: 15px; }
+    .filtros-lista { 
+        display: flex; 
+        flex-direction: row; 
+        overflow-x: auto; 
+        gap: 8px; 
+        padding: 5px 0;
+        scrollbar-width: none; /* Esconde scroll no Firefox */
+    }
+    .filtros-lista::-webkit-scrollbar { display: none; } /* Esconde scroll no Chrome/Safari */
+    
+    .filter-btn { 
+        white-space: nowrap; 
+        font-size: 0.85rem; 
+        padding: 10px 16px; 
+    }
+}
 
 @keyframes slideDown {
     from { opacity: 0; transform: translateY(-10px); }
     to { opacity: 1; transform: translateY(0); }
 }
-
-
 
 
 
