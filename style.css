@@ -160,9 +160,7 @@ body { background: var(--white); color: var(--text); overflow-x: hidden; }
 .step h3 { margin-bottom: 12px; color: var(--dark); font-size: 1.1rem; font-weight: 800; }
 .step p { font-size: 0.9rem; line-height: 1.5; color: var(--text); }
 
-@media (max-width: 1024px) {
-    .promo-grid { grid-template-columns: repeat(2, 1fr); gap: 15px; }
-}
+
 /* --- Estilo do Botão (Escondido por padrão no PC) --- */
 #btn-mobile {
     display: none; /* Esconde no monitor normal */
@@ -192,28 +190,136 @@ body { background: var(--white); color: var(--text); overflow-x: hidden; }
 }
 
 /* --- CONFIGURAÇÃO DO RESPONSIVO --- */
-@media (max-width: 768px) {
-    /* Mostra o botão apenas aqui */
-    #btn-mobile { 
-        display: block; 
+
+
+.footer { padding: 40px 0; text-align: center; border-top: 1px solid #eee; }
+
+
+
+/* ============================================================
+   ESTILOS DE CORREÇÃO RESPONSIVA (COLE AO FINAL DO ARQUIVO)
+   ============================================================ */
+
+@media screen and (max-width: 768px) {
+    
+    /* 1. Ajuste de Containers e Overflow */
+    html, body {
+        overflow-x: hidden; /* Impede que a tela balance para os lados */
+        width: 100%;
     }
 
-    .nav-links { 
-        display: none; 
+    .container {
+        padding: 0 20px;
     }
-    
-    #nav.active .nav-links { 
-        display: flex; 
-        position: absolute; 
-        top: 90px; 
-        left: 0; 
-        width: 100%; 
-        background: white; 
-        flex-direction: column; 
-        padding: 30px; 
-        border-bottom: 1px solid #eee;
+
+    /* 2. Menu e Navegação */
+    .navbar {
+        height: 75px;
+    }
+
+    .nav-links {
+        display: none; /* Esconde o menu padrão */
+    }
+
+    /* Quando o menu estiver aberto via JS */
+    #nav.active .nav-links {
+        display: flex;
+        flex-direction: column;
+        position: absolute;
+        top: 75px;
+        left: 0;
+        width: 100%;
+        background: #ffffff;
+        padding: 30px;
+        gap: 20px;
+        text-align: center;
+        border-bottom: 3px solid var(--primary);
+        box-shadow: 0 10px 20px rgba(0,0,0,0.1);
         z-index: 999;
+    }
+
+    /* 3. Hero Section (Banner) */
+    .hero {
+        height: auto;
+        min-height: 80vh;
+        padding: 60px 0;
+        display: flex;
+        align-items: center;
+    }
+
+    .hero-overlay {
+        padding: 40px 0;
+        background: rgba(0,0,0,0.6); /* Melhora leitura no celular */
+    }
+
+    .hero h1 {
+        font-size: 2rem !important; /* Força o tamanho menor */
+        line-height: 1.2;
+    }
+
+    .hero-btns {
+        flex-direction: column; /* Botões um embaixo do outro */
+        gap: 15px;
+        width: 100%;
+    }
+
+    .btn-primary, .btn-whatsapp-hero {
+        width: 100%;
+        text-align: center;
+        justify-content: center;
+        padding: 15px;
+    }
+
+    /* 4. Estatísticas (Stats) */
+    .stats-wrapper {
+        flex-direction: column;
+        gap: 40px;
+    }
+
+    /* 5. Grids (Promoções, Especialidades e Processos) */
+    .promo-grid, 
+    .ambientes-grid, 
+    .process-grid {
+        grid-template-columns: 1fr !important; /* Força 1 item por linha */
+        gap: 20px;
+    }
+
+    .ambiente-card {
+        height: 280px; /* Menor altura para caber na tela */
+    }
+
+    /* 6. Painel de Detalhes (Especialidades) */
+    .detail-panel {
+        padding: 20px;
+    }
+
+    .detail-content {
+        flex-direction: column;
+        text-align: center;
+    }
+
+    .detail-text h3 {
+        font-size: 1.4rem;
+    }
+
+    /* 7. Tipografia e Seções */
+    .section {
+        padding: 40px 0;
+    }
+
+    .section-title {
+        font-size: 1.8rem !important;
+        margin-bottom: 30px;
     }
 }
 
-.footer { padding: 40px 0; text-align: center; border-top: 1px solid #eee; }
+/* Ajuste fino para celulares muito pequenos (iPhone SE, etc) */
+@media screen and (max-width: 380px) {
+    .hero h1 {
+        font-size: 1.6rem !important;
+    }
+    
+    .stat-item strong {
+        font-size: 1.8rem;
+    }
+}
