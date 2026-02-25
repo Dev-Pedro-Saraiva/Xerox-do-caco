@@ -197,164 +197,141 @@ body { background: var(--white); color: var(--text); overflow-x: hidden; }
 
 
 /* ============================================================
-   ESTILOS DE CORREÇÃO RESPONSIVA (COLE AO FINAL DO ARQUIVO)
+   ESTILOS RESPONSIVOS CORRIGIDOS (MOBILE)
    ============================================================ */
-
 @media screen and (max-width: 768px) {
     
-    /* 1. Ajuste de Containers e Overflow */
+    /* 1. Reset de segurança e Nav Visível */
     html, body {
-        overflow-x: hidden; /* Impede que a tela balance para os lados */
+        overflow-x: hidden;
         width: 100%;
     }
 
-    .container {
-        padding: 0 20px;
-    }
-
-    /* 2. Menu e Navegação */
     .navbar {
-        height: 75px;
+        position: fixed; /* Fixa o menu no topo para ele não sumir */
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 70px;
+        background: #ffffff;
+        z-index: 9999; /* Garante que fique acima de tudo */
+        display: flex;
+        align-items: center;
+        box-shadow: 0 2px 10px rgba(0,0,0,0.1);
     }
 
-    .nav-links {
-        display: none; /* Esconde o menu padrão */
+    #btn-mobile {
+        display: flex !important; /* Força o botão hambúrguer a aparecer */
+        align-items: center;
+        z-index: 10000;
     }
 
-    /* Quando o menu estiver aberto via JS */
+    /* Ajuste do Menu Lateral/Suspenso */
     #nav.active .nav-links {
         display: flex;
         flex-direction: column;
-        position: absolute;
-        top: 75px;
+        position: fixed;
+        top: 70px;
         left: 0;
         width: 100%;
-        background: #ffffff;
-        padding: 30px;
-        gap: 20px;
+        height: auto;
+        background: white;
+        padding: 40px 20px;
+        gap: 25px;
         text-align: center;
-        border-bottom: 3px solid var(--primary);
         box-shadow: 0 10px 20px rgba(0,0,0,0.1);
-        z-index: 999;
     }
 
-    /* 3. Hero Section (Banner) */
+    /* 2. Banner Hero (Ajustado pela Largura) */
     .hero {
+        margin-top: 70px; /* Abre espaço para a navbar fixa */
         height: auto;
-        min-height: 100vh; /* Ocupa a tela inteira do celular */
+        min-height: 80vh; 
         position: relative;
         display: flex;
         align-items: center;
         justify-content: center;
-        padding: 100px 20px 60px 20px; /* Espaço para não bater no menu */
+        padding: 40px 20px;
         text-align: center;
-        overflow: hidden;
     }
 
     .hero-img {
         position: absolute;
         top: 0;
         left: 0;
-        width: 100%;
+        width: 100%; /* Adapta pela largura */
         height: 100%;
-        object-fit: cover; /* Faz a imagem cobrir tudo atrás */
-        object-position: center; /* Centraliza a parte principal da foto */
-        z-index: -1; /* Joga para trás do texto */
+        object-fit: cover; /* Cobre o fundo sem distorcer */
+        z-index: -1; /* Fica atrás de tudo */
     }
 
     .hero-overlay {
-        background: linear-gradient(to bottom, rgba(0,0,0,0.7), rgba(0,0,0,0.5)); /* Escurece o fundo para o texto brilhar */
-        position: absolute;
-        inset: 0;
-        width: 100%;
-        height: 100%;
-        display: flex;
-        align-items: center;
-        justify-content: center;
+        background: rgba(0, 0, 0, 0.6); /* Escurece a imagem para o texto aparecer */
         z-index: 0;
     }
 
-    /* Garante que o container de texto fique acima do overlay */
     .hero .container {
         position: relative;
-        z-index: 2;
+        z-index: 2; /* Texto acima da imagem e do overlay */
     }
 
     .hero h1 {
-        font-size: 2.2rem !important;
-        line-height: 1.1;
-        margin-bottom: 15px;
-    }
-
-    .hero p {
-        font-size: 1rem;
-        margin-bottom: 25px;
+        font-size: 1.8rem !important;
+        color: #ffffff;
+        margin-bottom: 20px;
     }
 
     .hero-btns {
         flex-direction: column;
-        width: 100%;
-        gap: 15px;
+        gap: 12px;
     }
 
     .btn-primary, .btn-whatsapp-hero {
         width: 100%;
-        display: flex;
         justify-content: center;
-        padding: 18px;
     }
 
-    /* 4. Estatísticas (Stats) */
-    .stats-wrapper {
-        flex-direction: column;
-        gap: 40px;
-    }
-
-    /* 5. Grids (Promoções, Especialidades e Processos) */
+    /* 3. Ajuste de Grades (Grid para Coluna Única) */
+    .stats-wrapper,
     .promo-grid, 
     .ambientes-grid, 
     .process-grid {
-        grid-template-columns: 1fr !important; /* Força 1 item por linha */
+        display: flex !important;
+        flex-direction: column !important;
+        grid-template-columns: 1fr !important;
         gap: 20px;
     }
 
+    .stat-item {
+        margin-bottom: 20px;
+    }
+
     .ambiente-card {
-        height: 280px; /* Menor altura para caber na tela */
+        height: 250px;
     }
 
-    /* 6. Painel de Detalhes (Especialidades) */
-    .detail-panel {
-        padding: 20px;
-    }
-
+    /* 4. Painel de Detalhes */
     .detail-content {
         flex-direction: column;
         text-align: center;
+        gap: 20px;
     }
 
-    .detail-text h3 {
-        font-size: 1.4rem;
-    }
-
-    /* 7. Tipografia e Seções */
     .section {
-        padding: 40px 0;
+        padding: 50px 0;
     }
 
     .section-title {
-        font-size: 1.8rem !important;
-        margin-bottom: 30px;
+        font-size: 1.6rem !important;
     }
 }
 
-/* Ajuste fino para celulares muito pequenos (iPhone SE, etc) */
+/* Telas bem pequenas */
 @media screen and (max-width: 380px) {
     .hero h1 {
-        font-size: 1.6rem !important;
-    }
-    
-    .stat-item strong {
-        font-size: 1.8rem;
+        font-size: 1.5rem !important;
     }
 }
+
+
 
