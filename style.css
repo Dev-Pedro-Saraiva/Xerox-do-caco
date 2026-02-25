@@ -241,33 +241,67 @@ body { background: var(--white); color: var(--text); overflow-x: hidden; }
     /* 3. Hero Section (Banner) */
     .hero {
         height: auto;
-        min-height: 80vh;
-        padding: 60px 0;
+        min-height: 100vh; /* Ocupa a tela inteira do celular */
+        position: relative;
         display: flex;
         align-items: center;
+        justify-content: center;
+        padding: 100px 20px 60px 20px; /* Espaço para não bater no menu */
+        text-align: center;
+        overflow: hidden;
+    }
+
+    .hero-img {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        object-fit: cover; /* Faz a imagem cobrir tudo atrás */
+        object-position: center; /* Centraliza a parte principal da foto */
+        z-index: -1; /* Joga para trás do texto */
     }
 
     .hero-overlay {
-        padding: 40px 0;
-        background: rgba(0,0,0,0.6); /* Melhora leitura no celular */
+        background: linear-gradient(to bottom, rgba(0,0,0,0.7), rgba(0,0,0,0.5)); /* Escurece o fundo para o texto brilhar */
+        position: absolute;
+        inset: 0;
+        width: 100%;
+        height: 100%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        z-index: 0;
+    }
+
+    /* Garante que o container de texto fique acima do overlay */
+    .hero .container {
+        position: relative;
+        z-index: 2;
     }
 
     .hero h1 {
-        font-size: 2rem !important; /* Força o tamanho menor */
-        line-height: 1.2;
+        font-size: 2.2rem !important;
+        line-height: 1.1;
+        margin-bottom: 15px;
+    }
+
+    .hero p {
+        font-size: 1rem;
+        margin-bottom: 25px;
     }
 
     .hero-btns {
-        flex-direction: column; /* Botões um embaixo do outro */
-        gap: 15px;
+        flex-direction: column;
         width: 100%;
+        gap: 15px;
     }
 
     .btn-primary, .btn-whatsapp-hero {
         width: 100%;
-        text-align: center;
+        display: flex;
         justify-content: center;
-        padding: 15px;
+        padding: 18px;
     }
 
     /* 4. Estatísticas (Stats) */
@@ -323,3 +357,4 @@ body { background: var(--white); color: var(--text); overflow-x: hidden; }
         font-size: 1.8rem;
     }
 }
+
