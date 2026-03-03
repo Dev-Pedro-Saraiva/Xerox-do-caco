@@ -6,20 +6,21 @@
     <title>Xerox do caco | Detalhes do Produto</title>
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="../produtos/produtos.css">
-    <link rel="stylesheet" href="detalhe.css">
+    <link rel="stylesheet" href="/produto/detalhe.css">
+    <link rel="icon" type="image/webp" href="https://i.postimg.cc/435rdqRD/width-478.webp">
 </head>
 <body>
-    <header class="navbar">
-        <div class="container nav-wrapper">
-              <a href="index.html" class="logo">
+  <header class="navbar">
+    <div class="container nav-wrapper">
+        <a href="/" class="logo">
             <img src="https://i.postimg.cc/5td7pqXy/logo-photp-(1).png" alt="Logo Xerox do caco">
         </a>
-            <button onclick="location.href='../produtos/index.html'" class="btn-whatsapp-hero" style="padding: 10px 20px; font-size: 0.8rem; border-color: var(--primary); color: var(--primary); background: transparent; border: 1px solid;">
-                ← Voltar aos Produtos
-            </button>
-        </div>
-    </header>
 
+        <button onclick="location.href='/produtos'" class="btn-whatsapp-hero" style="padding: 10px 20px; font-size: 0.8rem; border-color: var(--primary); color: var(--primary); background: transparent; border: 1px solid;">
+            ← Voltar aos Produtos
+        </button>
+    </div>
+</header>
     <main class="container" style="padding: 60px 0;">
         <div id="loading" style="text-align: center; font-weight: bold; color: var(--primary); padding: 50px;">Carregando produto...</div>
         
@@ -56,5 +57,14 @@
     </main>
 
     <script type="module" src="detalhe.js"></script>
+
+    <footer class="footer">
+        <div class="container footer-content">
+            <div class="logo">
+                
+            </div>
+            <p>&copy;Todos os direitos reservados @Xeroxdocaco.</p>
+        </div>
+    </footer>
 </body>
 </html>
