@@ -18,7 +18,7 @@
         }
 
         body { background: var(--fundo-admin); color: var(--texto-dark); font-family: 'Segoe UI', sans-serif; margin: 0; }
-        .admin-main { padding: 20px; max-width: 1000px; margin: auto; }
+        .admin-main { padding: 20px; max-width: 1100px; margin: auto; }
         
         .header-admin {
             display: flex; justify-content: space-between; align-items: center;
@@ -43,7 +43,9 @@
         input, select, textarea {
             width: 100%; padding: 12px; margin-bottom: 15px; border: 1px solid var(--borda-suave);
             border-radius: 8px; outline: none; font-size: 0.95rem; box-sizing: border-box;
+            transition: 0.3s;
         }
+        input:focus, textarea:focus { border-color: var(--azul-edit); }
         
         .btn-save {
             width: 100%; padding: 14px; background: var(--verde-esmeralda); color: #fff;
@@ -51,12 +53,6 @@
         }
 
         .btn-edit { background: var(--azul-edit); color: white; border: none; border-radius: 4px; padding: 4px 8px; cursor: pointer; margin-right: 5px; }
-
-        .cat-item-admin { 
-            display: flex; align-items: center; justify-content: space-between; 
-            background: #f8f9fa; padding: 10px; border-radius: 8px; margin-bottom: 5px; border: 1px solid #eee;
-        }
-        .sub-item-admin { margin-left: 30px; border-left: 3px solid var(--azul-edit); background: #fff; }
 
         .dynamic-field-group { display: flex; gap: 5px; margin-bottom: 10px; }
         .btn-remove-field { background: #ff4757; color: white; border: none; border-radius: 8px; padding: 0 15px; cursor: pointer; }
@@ -81,6 +77,15 @@
         }
         .item-row-admin img { width: 50px; height: 50px; object-fit: cover; border-radius: 6px; }
         .info { flex: 1; }
+
+        /* Estilo para a Descrição Melhorada */
+        #prod-desc {
+            height: 180px;
+            line-height: 1.6;
+            resize: vertical;
+            border: 2px solid #eee;
+            background: #fff;
+        }
     </style>
 </head>
 <body>
@@ -100,40 +105,19 @@
                 <div class="flex-row">
                     <div>
                         <label>URL Foto da Fachada</label>
-                        <input type="text" id="emp-foto" placeholder="https://link-da-foto.jpg">
+                        <input type="text" id="emp-foto">
                         <label>WhatsApp (DDD + Número)</label>
-                        <input type="number" id="emp-zap" placeholder="Ex: 21999999999">
+                        <input type="number" id="emp-zap">
                     </div>
                     <div>
                         <label>Sobre a Empresa</label>
-                        <textarea id="emp-sobre" style="height: 105px;" placeholder="Conte um pouco sobre a loja..."></textarea>
+                        <textarea id="emp-sobre" style="height: 105px;"></textarea>
                     </div>
                 </div>
                 <label>Código do Google Maps (Iframe):</label>
-                <textarea id="emp-mapa" placeholder='Cole aqui o código <iframe...> fornecido pelo Google Maps'></textarea>
+                <textarea id="emp-mapa"></textarea>
                 <button type="submit" class="btn-save" style="background:var(--verde-zap);">Atualizar Perfil</button>
             </form>
-        </div>
-
-        <h2 class="section-title">🔥 Gestão de Promoções</h2>
-        <div class="flex-row">
-            <div class="card-admin" style="border-left: 5px solid var(--vermelho-promo);">
-                <form id="promo-form">
-                    <label>Nome do Produto em Promoção</label>
-                    <input type="text" id="promo-name" placeholder="Ex: Cimento CP-II 50kg" required>
-                    <div style="display:flex; gap:10px;">
-                        <div style="flex:1"><label>Preço Antigo</label><input type="number" step="0.01" id="promo-old-price"></div>
-                        <div style="flex:1"><label>Preço Promo</label><input type="number" step="0.01" id="promo-new-price"></div>
-                    </div>
-                    <label>Link da Imagem</label>
-                    <input type="text" id="promo-img-url">
-                    <button type="submit" class="btn-save" style="background: var(--vermelho-promo);">Lançar Promoção</button>
-                </form>
-            </div>
-            <div class="card-admin">
-                <label>Promoções Ativas</label>
-                <div id="list-promos-admin" class="scroll-list"></div>
-            </div>
         </div>
 
         <h2 class="section-title">📦 Gestão do Catálogo</h2>
@@ -144,15 +128,22 @@
                     <div>
                         <label>Nome do Produto</label>
                         <input type="text" id="prod-name" required>
-                        <label>Categorias e Subcategorias</label>
+                        
+                        <label>Categorias</label>
                         <div id="prod-categories-container" class="multi-select-area"></div>
+                        
                         <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
-                            <div><label>Preço Base</label><input type="number" step="0.01" id="prod-price" required></div>
+                            <div><label>Preço Base (R$)</label><input type="number" step="0.01" id="prod-price" required></div>
                             <div><label>Ordem na Fila</label><input type="number" id="prod-order" value="99"></div>
                         </div>
+
+                        <label style="color: var(--azul-edit); margin-top:15px;">✨ Acabamentos / Adicionais (Preço Extra)</label>
+                        <div id="prod-finishes-container"></div>
+                        <button type="button" id="btn-add-finish" style="width:100%; padding:8px; margin-bottom:15px; cursor:pointer; background:#e3f2fd; border:1px solid #bbdefb; border-radius:8px; color:#1976d2; font-weight:bold;">+ Novo Acabamento</button>
                     </div>
+
                     <div>
-                        <label>Imagens</label>
+                        <label>Imagens (URLs)</label>
                         <div id="prod-imgs-container">
                             <div class="dynamic-field-group">
                                 <input type="text" class="prod-img-input" placeholder="URL da Imagem 1" required>
@@ -160,12 +151,12 @@
                         </div>
                         <button type="button" id="btn-add-img-field" style="width:100%; padding:8px; margin-bottom:15px; cursor:pointer; background:#eee; border:1px solid #ccc; border-radius:8px;">+ Outra Imagem</button>
                         
-                        <label>Variações (Cor, Tamanho, etc.)</label>
+                        <label>Variações de Seleção (Tamanho, Cor, etc.)</label>
                         <div id="prod-variations-container"></div>
                         <button type="button" id="btn-add-variation" style="width:100%; padding:8px; margin-bottom:15px; cursor:pointer; background:#f1f2f6; border:1px solid #ced4da; border-radius:8px; font-weight: bold;">+ Adicionar Variação</button>
 
-                        <label>Descrição</label>
-                        <textarea id="prod-desc" style="height: 105px;"></textarea>
+                        <label>Descrição Detalhada</label>
+                        <textarea id="prod-desc" placeholder="Destaque as características técnicas..."></textarea>
                     </div>
                 </div>
                 <button type="submit" class="btn-save" id="btn-submit-prod">Salvar Produto</button>
@@ -174,28 +165,21 @@
         </div>
 
         <div class="card-admin">
-            <label>Produtos Cadastrados (Clique em ✏️ para editar)</label>
+            <label>Produtos Cadastrados</label>
             <div id="admin-product-grid" class="scroll-list"></div>
         </div>
 
-        <h2 class="section-title">⚙️ Configurações</h2>
-        <div class="flex-row">
-            <div class="card-admin">
-                <h3>📁 Gestão de Categorias</h3>
-                <div style="background:#f9f9f9; padding:15px; border-radius:8px; margin-bottom:15px; border:1px solid #ddd;">
+        <h2 class="section-title">⚙️ Gestão de Categorias</h2>
+        <div class="card-admin">
+            <div class="flex-row">
+                <div>
                     <label>Nome da Categoria Principal</label>
-                    <input type="text" id="new-category-name" placeholder="Ex: Tintas">
-                    
-                    <label>Ou Vincular como Sub de:</label>
+                    <input type="text" id="new-category-name">
+                    <label>Vincular como Sub de:</label>
                     <select id="parent-category-select"><option value="">-- Criar como Principal --</option></select>
-
-                    <label>Adicionar Subcategorias (Opcional)</label>
-                    <div id="bulk-subs-container"></div>
-                    <button type="button" id="btn-add-sub-input" style="width:100%; padding:6px; margin-bottom:15px; background:#e1f5fe; border:1px solid #b3e5fc; color:#039be5; border-radius:8px; cursor:pointer; font-weight:bold;">+ Adicionar Subcategoria</button>
-
                     <label>Ordem</label>
                     <input type="number" id="new-category-order" value="0">
-                    <button id="btn-add-category" class="btn-save">Salvar Tudo</button>
+                    <button id="btn-add-category" class="btn-save">Salvar Categoria</button>
                 </div>
                 <div id="list-categories-admin" class="scroll-list"></div>
             </div>
@@ -203,37 +187,5 @@
     </div>
 
     <script type="module" src="admin-db.js"></script>
-    <script>
-        // Lógica dos botões dinâmicos de IMAGEM
-        document.getElementById('btn-add-img-field').onclick = function() {
-            const container = document.getElementById('prod-imgs-container');
-            const div = document.createElement('div');
-            div.className = 'dynamic-field-group';
-            div.innerHTML = `<input type="text" class="prod-img-input" placeholder="URL da Imagem"><button type="button" class="btn-remove-field" onclick="this.parentElement.remove()">✕</button>`;
-            container.appendChild(div);
-        };
-
-        // Lógica dos botões dinâmicos de VARIAÇÃO
-        document.getElementById('btn-add-variation').onclick = function() {
-            const container = document.getElementById('prod-variations-container');
-            const div = document.createElement('div');
-            div.className = 'dynamic-field-group variation-item';
-            div.innerHTML = `
-                <input type="text" class="var-name" placeholder="Nome (ex: Azul)" style="flex:2">
-                <input type="number" step="0.01" class="var-price" placeholder="Preço (Opcional)" style="flex:1">
-                <button type="button" class="btn-remove-field" onclick="this.parentElement.remove()">✕</button>
-            `;
-            container.appendChild(div);
-        };
-
-        // Lógica dos botões dinâmicos de SUBCATEGORIA
-        document.getElementById('btn-add-sub-input').onclick = function() {
-            const container = document.getElementById('bulk-subs-container');
-            const div = document.createElement('div');
-            div.className = 'dynamic-field-group';
-            div.innerHTML = `<input type="text" class="new-sub-input" placeholder="Nome da Subcategoria"><button type="button" class="btn-remove-field" onclick="this.parentElement.remove()">✕</button>`;
-            container.appendChild(div);
-        };
-    </script>
 </body>
 </html>
