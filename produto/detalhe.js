@@ -21,19 +21,16 @@ const qtyInput = document.getElementById('qty-detalhe');
 const imgPrincipal = document.getElementById('view-principal');
 
 let variacaoSelecionada = null;
+let acabamentosSelecionados = []; // Array para guardar os objetos de acabamento marcados
 
-// --- FUNÇÃO DE AVISO (TOAST) ---
 function showToast(message) {
     const oldToast = document.querySelector('.toast-notification');
     if (oldToast) oldToast.remove();
-
     const toast = document.createElement('div');
     toast.className = 'toast-notification';
     toast.innerHTML = `<span>${message}</span>`;
     document.body.appendChild(toast);
-
     setTimeout(() => toast.classList.add('show'), 100);
-    
     setTimeout(() => {
         toast.classList.remove('show');
         setTimeout(() => toast.remove(), 500);
@@ -43,71 +40,79 @@ function showToast(message) {
 async function loadProduct() {
     const urlParams = new URLSearchParams(window.location.search);
     const produtoId = urlParams.get('id');
-
-    if (!produtoId) {
-        window.location.href = '../produtos/index.html';
-        return;
-    }
+    if (!produtoId) { window.location.href = '../produtos/index.html'; return; }
 
     try {
         const docRef = doc(db, "produtos", produtoId);
         const snap = await getDoc(docRef);
-
         if (snap.exists()) {
-            const produtoData = snap.data();
-            renderDetail(produtoData, snap.id);
-            loadRelatedProducts(produtoData, snap.id);
+            renderDetail(snap.data(), snap.id);
+            loadRelatedProducts(snap.data(), snap.id);
         } else {
             window.location.href = '../produtos/index.html';
         }
-    } catch (e) {
-        console.error("Erro:", e);
-    }
+    } catch (e) { console.error("Erro:", e); }
 }
 
 function renderDetail(p, id) {
-    // --- ATUALIZA URL AMIGÁVEL ---
     const nomeLimpo = p.nome.toLowerCase().replace(/[^a-z0-9]/g, '-');
-    const newUrl = `${window.location.pathname}?id=${id}&produto=${nomeLimpo}`;
-    window.history.replaceState({}, '', newUrl);
-    document.title = `Peniel | ${p.nome}`;
+    window.history.replaceState({}, '', `${window.location.pathname}?id=${id}&produto=${nomeLimpo}`);
+    document.title = `Xerox do Caco | ${p.nome}`;
 
     document.getElementById('detalhe-nome').innerText = p.nome;
-    document.getElementById('detalhe-desc').innerText = p.descricao || 'Qualidade Peniel Materiais.';
-    
-    let precoBase = parseFloat(p.precoBase || 0);
-    const precoEl = document.getElementById('detalhe-preco');
-    const containerVars = document.getElementById('detalhe-variacoes');
+    // pre-line para respeitar as quebras de linha que você fizer no painel
+    document.getElementById('detalhe-desc').style.whiteSpace = "pre-line";
+    document.getElementById('detalhe-desc').innerText = p.descricao || 'Qualidade garantida.';
     
     imgPrincipal.src = p.imagem;
-    containerVars.innerHTML = "";
 
-    // Lógica de Variações
+    // --- LÓGICA DE VARIAÇÕES ---
+    const containerVars = document.getElementById('detalhe-variacoes');
+    containerVars.innerHTML = p.variacoes?.length > 0 ? "<h4>Opções:</h4>" : "";
+    
     if (p.variacoes && p.variacoes.length > 0) {
         p.variacoes.forEach((v, index) => {
             const btn = document.createElement('button');
             btn.className = `var-btn-detalhe ${index === 0 ? 'active' : ''}`;
             btn.innerText = v.nome;
-            if(index === 0) {
-                variacaoSelecionada = v;
-                precoBase = v.preco ? parseFloat(v.preco) : precoBase;
-            }
+            if(index === 0) variacaoSelecionada = v;
             btn.onclick = () => {
                 document.querySelectorAll('.var-btn-detalhe').forEach(b => b.classList.remove('active'));
                 btn.classList.add('active');
                 variacaoSelecionada = v;
-                const novoPreco = v.preco ? parseFloat(v.preco) : parseFloat(p.precoBase);
-                precoEl.innerText = `R$ ${novoPreco.toFixed(2).replace('.', ',')}`;
+                recalcularPrecoTotal(p);
             };
             containerVars.appendChild(btn);
         });
-    } else {
-        variacaoSelecionada = null;
     }
 
-    precoEl.innerText = `R$ ${precoBase.toFixed(2).replace('.', ',')}`;
+    // --- LÓGICA DE ACABAMENTOS (Botões de Bolinha/Pill) ---
+    const containerFinishes = document.getElementById('detalhe-acabamentos');
+    containerFinishes.innerHTML = p.acabamentos?.length > 0 ? "<h4>Acabamentos:</h4>" : "";
 
-    // Thumbs (Galeria)
+    if (p.acabamentos && p.acabamentos.length > 0) {
+        p.acabamentos.forEach((a) => {
+            const btn = document.createElement('button');
+            btn.className = 'finish-btn-detalhe';
+            const precoTexto = parseFloat(a.adicional) > 0 ? ` +R$${parseFloat(a.adicional).toFixed(2)}` : "";
+            btn.innerText = `${a.nome}${precoTexto}`;
+            
+            btn.onclick = () => {
+                btn.classList.toggle('active');
+                if(btn.classList.contains('active')) {
+                    acabamentosSelecionados.push(a);
+                } else {
+                    acabamentosSelecionados = acabamentosSelecionados.filter(item => item.nome !== a.nome);
+                }
+                recalcularPrecoTotal(p);
+            };
+            containerFinishes.appendChild(btn);
+        });
+    }
+
+    recalcularPrecoTotal(p);
+
+    // Thumbs, Qty e Galeria (Inalterados)
     const containerThumbs = document.getElementById('thumbs');
     containerThumbs.innerHTML = "";
     const imagens = p.imagens?.length > 0 ? p.imagens : [p.imagem];
@@ -123,58 +128,60 @@ function renderDetail(p, id) {
         containerThumbs.appendChild(img);
     });
 
-    // Controle de Quantidade
-    document.getElementById('qty-plus').onclick = () => {
-        qtyInput.value = parseInt(qtyInput.value) + 1;
-    };
-    document.getElementById('qty-minus').onclick = () => {
-        if(parseInt(qtyInput.value) > 1) {
-            qtyInput.value = parseInt(qtyInput.value) - 1;
-        }
-    };
+    document.getElementById('qty-plus').onclick = () => { qtyInput.value = parseInt(qtyInput.value) + 1; };
+    document.getElementById('qty-minus').onclick = () => { if(parseInt(qtyInput.value) > 1) qtyInput.value = parseInt(qtyInput.value) - 1; };
 
-    // --- CARRINHO SEM ALERT ---
+    // --- BOTÃO ADICIONAR ---
     document.getElementById('btn-add-detalhe').onclick = () => {
         let cart = JSON.parse(localStorage.getItem('ferroforte_cart')) || [];
         const qtd = parseInt(qtyInput.value);
-        const precoItem = variacaoSelecionada?.preco ? parseFloat(variacaoSelecionada.preco) : parseFloat(p.precoBase);
-        const nomeFinal = variacaoSelecionada ? `${p.nome} (${variacaoSelecionada.nome})` : p.nome;
-        const idUnico = variacaoSelecionada ? `${id}-${variacaoSelecionada.nome}` : id;
+        
+        let precoBaseItem = variacaoSelecionada?.preco ? parseFloat(variacaoSelecionada.preco) : parseFloat(p.precoBase || 0);
+        let adicionalAcabamentos = acabamentosSelecionados.reduce((acc, curr) => acc + parseFloat(curr.adicional || 0), 0);
+        const precoFinalUnitario = precoBaseItem + adicionalAcabamentos;
+
+        // Monta o nome com as escolhas
+        let extras = acabamentosSelecionados.map(a => a.nome).join(' + ');
+        let nomeNoCarrinho = p.nome;
+        if(variacaoSelecionada) nomeNoCarrinho += ` (${variacaoSelecionada.nome})`;
+        if(extras) nomeNoCarrinho += ` + ${extras}`;
+
+        const idUnico = `${id}-${variacaoSelecionada?.nome || 'base'}-${extras.replace(/\s+/g, '')}`;
 
         const idx = cart.findIndex(i => i.id === idUnico);
         if(idx > -1) { 
             cart[idx].qty += qtd; 
-            cart[idx].subtotal = cart[idx].qty * precoItem; 
+            cart[idx].subtotal = cart[idx].qty * precoFinalUnitario; 
         } else { 
             cart.push({ 
                 id: idUnico, 
-                nome: nomeFinal, 
-                preco: precoItem, 
+                nome: nomeNoCarrinho, 
+                preco: precoFinalUnitario, 
                 qty: qtd, 
-                subtotal: precoItem * qtd,
+                subtotal: precoFinalUnitario * qtd,
                 imagem: p.imagem 
             }); 
         }
         
         localStorage.setItem('ferroforte_cart', JSON.stringify(cart));
-        
-        // Feedback elegante
         showToast("✓ Adicionado ao seu pedido!");
-
-        // Redireciona após o usuário ver a mensagem
-        setTimeout(() => {
-            window.location.href = '../produtos/index.html';
-        }, 1200);
+        setTimeout(() => { window.location.href = '../produtos/index.html'; }, 1000);
     };
 
     loading.style.display = 'none';
     content.style.display = 'grid';
 }
 
+function recalcularPrecoTotal(p) {
+    let precoBase = variacaoSelecionada?.preco ? parseFloat(variacaoSelecionada.preco) : parseFloat(p.precoBase || 0);
+    let adicional = acabamentosSelecionados.reduce((acc, curr) => acc + parseFloat(curr.adicional || 0), 0);
+    const total = precoBase + adicional;
+    document.getElementById('detalhe-preco').innerText = `R$ ${total.toFixed(2).replace('.', ',')}`;
+}
+
 async function loadRelatedProducts(currentProduct, currentId) {
     const grid = document.getElementById('related-grid');
     const container = document.getElementById('related-container');
-    
     const termo = currentProduct.subcategorias?.[0] || currentProduct.categorias?.[0];
     if (!termo) return;
 
@@ -183,13 +190,11 @@ async function loadRelatedProducts(currentProduct, currentId) {
         const q = query(collection(db, "produtos"), where(campoFiltro, "array-contains", termo), limit(5));
         const snap = await getDocs(q);
         let html = "";
-
         snap.forEach(docSnap => {
             const p = docSnap.data();
-            const id = docSnap.id;
-            if (id !== currentId) {
+            if (docSnap.id !== currentId) {
                 html += `
-                <div class="promo-card" onclick="window.location.href='index.html?id=${id}'" style="cursor:pointer">
+                <div class="promo-card" onclick="window.location.href='index.html?id=${docSnap.id}'" style="cursor:pointer">
                     <div class="promo-img" style="background-image: url('${p.imagem}')"></div>
                     <div class="p-content">
                         <h3>${p.nome}</h3>
@@ -198,11 +203,7 @@ async function loadRelatedProducts(currentProduct, currentId) {
                 </div>`;
             }
         });
-
-        if (html !== "") { 
-            grid.innerHTML = html; 
-            container.style.display = "block"; 
-        }
+        if (html !== "") { grid.innerHTML = html; container.style.display = "block"; }
     } catch (e) { console.error(e); }
 }
 
