@@ -16,6 +16,11 @@
             <img src="https://i.postimg.cc/5td7pqXy/logo-photp-(1).png" alt="Logo Xerox do caco">
         </a>
         
+        <div class="search-container">
+            <input type="text" id="input-busca" placeholder="O que você procura?">
+            <span class="search-icon">🔍</span>
+        </div>
+
         <nav id="mobile-menu">
             <ul class="nav-links">
                 <li><a href="/">Home</a></li>
@@ -35,54 +40,47 @@
     </div>
 </header>
 
-
-    <main class="container section">
-        <div class="catalogo-layout">
-            <aside class="sidebar">
-                <div class="sidebar-sticky">
-                    <h3 class="sidebar-title">Categorias</h3>
-                    <div id="filtros-principais" class="filtros-lista">
-                        </div>
-                    
-                    <div id="sub-filtros-container" class="sub-filtros-box"></div>
-                </div>
-            </aside>
-
-            <section class="conteudo">
-                <h1 class="section-title">Nosso <span>Catálogo</span></h1>
-                <div id="grid-produtos" class="promo-grid">
+<main class="container section">
+    <div class="catalogo-layout">
+        <aside class="sidebar">
+            <div class="sidebar-sticky">
+                <h3 class="sidebar-title">Categorias</h3>
+                <div id="filtros-principais" class="filtros-lista">
                     </div>
-            </section>
-        </div>
-    </main>
-
-    <div id="cart-overlay" class="cart-overlay"></div>
-    <aside id="cart-sidebar" class="cart-sidebar">
-        <div class="cart-header">
-            <h3>Seu Pedido</h3>
-            <button id="close-cart">✕</button>
-        </div>
-        <div id="cart-items" class="cart-items-list"></div>
-        <div class="cart-footer">
-            <div class="total-row">
-                <span>Total:</span>
-                <span id="cart-total-value">R$ 0,00</span>
             </div>
-            <button id="checkout-whatsapp" class="btn-whatsapp-hero" style="width: 100%; justify-content: center; background: #25d366; border: none;">
-                Finalizar no WhatsApp
-            </button>
-        </div>
-    </aside>
+        </aside>
 
-    <script type="module" src="/produtos/filtro.js"></script>
+        <section class="conteudo">
+            <h1 class="section-title">Nosso <span>Catálogo</span></h1>
+            <div id="grid-produtos" class="promo-grid"></div>
+        </section>
+    </div>
+</main>
 
-    <footer class="footer">
-        <div class="container footer-content">
-            <div class="logo">
-                
-            </div>
-            <p>&copy;Todos os direitos reservados @Xeroxdocaco.</p>
+<div id="cart-overlay" class="cart-overlay"></div>
+<aside id="cart-sidebar" class="cart-sidebar">
+    <div class="cart-header">
+        <h3>Seu Pedido</h3>
+        <button id="close-cart">✕</button>
+    </div>
+    <div id="cart-items" class="cart-items-list"></div>
+    <div class="cart-footer">
+        <div class="total-row">
+            <span>Total:</span>
+            <span id="cart-total-value">R$ 0,00</span>
         </div>
-    </footer>
+        <button id="checkout-whatsapp" class="btn-whatsapp-hero" style="width: 100%; justify-content: center; background: #25d366; border: none;">
+            Finalizar no WhatsApp
+        </button>
+    </div>
+</aside>
+
+<script type="module" src="/produtos/filtro.js"></script>
+
+<footer class="footer">
+    <div class="container footer-content">
+        <p>&copy;Todos os direitos reservados @Xeroxdocaco.</p>
+    </div>
+</footer>
 </body>
 </html>
