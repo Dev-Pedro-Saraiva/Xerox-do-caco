@@ -15,9 +15,34 @@ const db = getFirestore(app);
 
 let cart = JSON.parse(localStorage.getItem('ferroforte_cart')) || [];
 let todasCategorias = [];
-let todosProdutosDocs = []; // Guardar referência para busca rápida
+let todosProdutosDocs = []; 
 
 const gridProdutos = document.getElementById('grid-produtos');
+
+// --- LÓGICA DO MENU MOBILE (HAMBURGUER) ---
+const btnMobile = document.getElementById('btn-mobile');
+const mobileMenu = document.getElementById('mobile-menu');
+
+if (btnMobile && mobileMenu) {
+    btnMobile.addEventListener('click', () => {
+        mobileMenu.classList.toggle('active');
+        const active = mobileMenu.classList.contains('active');
+        btnMobile.setAttribute('aria-expanded', active);
+        
+        const hamburger = document.getElementById('hamburger');
+        if (active) {
+            hamburger.style.borderTopColor = 'transparent';
+        } else {
+            hamburger.style.borderTopColor = 'var(--dark)';
+        }
+    });
+
+    mobileMenu.querySelectorAll('a').forEach(link => {
+        link.addEventListener('click', () => {
+            mobileMenu.classList.remove('active');
+        });
+    });
+}
 
 // --- BUSCA PELA LUPA ---
 const inputBusca = document.getElementById('input-busca');
@@ -55,7 +80,6 @@ function renderCategories() {
         filtrarCards('all');
     };
 
-    // Filtra apenas categorias PAI
     todasCategorias.filter(c => !c.parentID).forEach(cat => {
         const group = document.createElement('div');
         group.className = 'cat-group';
@@ -64,7 +88,6 @@ function renderCategories() {
         btn.className = 'filter-btn';
         btn.innerText = cat.nome;
 
-        // Criar lista de subcategorias (cascata)
         const subList = document.createElement('div');
         subList.className = 'sub-menu-list';
         
@@ -115,7 +138,6 @@ function filtrarCards(termo) {
     });
 }
 
-// --- MANTENDO SUA LÓGICA DE PRODUTOS E CARRINHO ABAIXO ---
 function renderProducts(docs) {
     gridProdutos.innerHTML = "";
     docs.forEach(docSnap => {
@@ -160,9 +182,6 @@ function renderProducts(docs) {
     });
 }
 
-// ... (Restante das funções changeQty, selecionarVariacao, prepararAdicao, addToCart, updateCart, removeItem e checkoutWhatsapp permanecem iguais à sua versão anterior) ...
-
-// Registro global para as funções chamadas via onclick no HTML string
 window.changeQty = (id, delta) => {
     const input = document.getElementById(`qty-${id}`);
     let val = parseInt(input.value) + delta;
@@ -229,16 +248,28 @@ function updateCart() {
 
 window.removeItem = (i) => { cart.splice(i, 1); updateCart(); };
 
-document.getElementById('checkout-whatsapp').onclick = () => {
-    if(cart.length === 0) return alert("Carrinho vazio!");
-    let texto = "Olá! Gostaria de solicitar os seguintes itens:\n\n";
-    let total = 0;
-    cart.forEach(item => {
-        texto += `*${item.qty}x* ${item.nome} - R$ ${item.subtotal.toFixed(2).replace('.', ',')}\n`;
-        total += item.subtotal;
-    });
-    texto += `\n*Total estimado: R$ ${total.toFixed(2).replace('.', ',')}*`;
-    window.open(`https://wa.me/5591983053860?text=${encodeURIComponent(texto)}`, '_blank');
-};
+const btnCheckout = document.getElementById('checkout-whatsapp');
+if(btnCheckout) {
+    btnCheckout.onclick = () => {
+        if(cart.length === 0) return alert("Carrinho vazio!");
+        let texto = "Olá! Gostaria de solicitar os seguintes itens:\n\n";
+        let total = 0;
+        cart.forEach(item => {
+            texto += `*${item.qty}x* ${item.nome} - R$ ${item.subtotal.toFixed(2).replace('.', ',')}\n`;
+            total += item.subtotal;
+        });
+        texto += `\n*Total estimado: R$ ${total.toFixed(2).replace('.', ',')}*`;
+        window.open(`https://wa.me/5591983053860?text=${encodeURIComponent(texto)}`, '_blank');
+    };
+}
+
+const btnCloseCart = document.getElementById('close-cart');
+const cartSidebar = document.getElementById('cart-sidebar');
+const cartOverlay = document.getElementById('cart-overlay');
+const btnCartIcon = document.getElementById('cart-icon-btn');
+
+if(btnCartIcon) btnCartIcon.onclick = () => { cartSidebar.classList.add('active'); cartOverlay.classList.add('active'); };
+if(btnCloseCart) btnCloseCart.onclick = () => { cartSidebar.classList.remove('active'); cartOverlay.classList.remove('active'); };
+if(cartOverlay) cartOverlay.onclick = () => { cartSidebar.classList.remove('active'); cartOverlay.classList.remove('active'); };
 
 loadData();
