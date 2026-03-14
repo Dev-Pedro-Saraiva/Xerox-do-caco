@@ -259,7 +259,7 @@ if(btnCheckout) {
             total += item.subtotal;
         });
         texto += `\n*Total estimado: R$ ${total.toFixed(2).replace('.', ',')}*`;
-        window.open(`https://wa.me/5591983053860?text=${encodeURIComponent(texto)}`, '_blank');
+        window.open(`https://wa.me/559185121047?text=${encodeURIComponent(texto)}`, '_blank');
     };
 }
 
