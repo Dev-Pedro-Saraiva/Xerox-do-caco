@@ -438,3 +438,17 @@ body { background: var(--white); color: var(--text); overflow-x: hidden; }
 .p-variations { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 12px; }
 .var-pill { background: #f1f2f6; border: 1px solid #dfe6e9; padding: 4px 10px; border-radius: 6px; font-size: 0.7rem; font-weight: 700; cursor: pointer; color: #636e72; }
 .var-pill.active { background: var(--dark); color: white; }
+
+/* Garante que o menu apareça quando estiver ativo */
+@media (max-width: 1024px) {
+    #mobile-menu.active { 
+        display: block !important; 
+        animation: slideDown 0.3s ease-out;
+    }
+}
+
+.promo-img:hover {
+    opacity: 0.9;
+    transform: scale(1.02);
+    transition: all 0.3s ease;
+}
