@@ -108,3 +108,34 @@
 .thumb-img.active {
     border-color: #27ae60;
 }
+
+/* Estilo dos títulos dentro da info */
+.info-detalhada h4 {
+    font-size: 0.9rem;
+    color: var(--dark);
+    margin-bottom: 10px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+/* Botão de acabamento estilo Pill/Bolinha */
+.finish-btn-detalhe {
+    background: #f1f2f6;
+    border: 1px solid #ddd;
+    padding: 10px 18px;
+    border-radius: 50px; /* Faz o efeito bolinha nas pontas */
+    font-size: 0.85rem;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    margin-right: 8px;
+    margin-bottom: 8px;
+    font-weight: 500;
+}
+
+/* Quando o acabamento está selecionado (Verde Neon/Preto) */
+.finish-btn-detalhe.active {
+    background: #000;
+    color: #39FF14; /* Verde Neon */
+    border-color: #39FF14;
+    box-shadow: 0 0 10px rgba(57, 255, 20, 0.3);
+}
