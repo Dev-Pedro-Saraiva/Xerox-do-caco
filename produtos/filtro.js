@@ -138,6 +138,7 @@ function filtrarCards(termo) {
     });
 }
 
+// --- RENDERIZAR PRODUTOS (COM ACABAMENTOS) ---
 function renderProducts(docs) {
     gridProdutos.innerHTML = "";
     docs.forEach(docSnap => {
@@ -145,42 +146,90 @@ function renderProducts(docs) {
         const id = docSnap.id;
         let precoBase = parseFloat(p.precoBase || 0);
         let temVariacoes = p.variacoes && p.variacoes.length > 0;
+        let temAcabamentos = p.acabamentos && p.acabamentos.length > 0;
 
         const card = document.createElement('div');
         card.className = 'promo-card';
         card.id = `card-${id}`;
         card.dataset.category = [...(p.categorias || []), ...(p.subcategorias || [])].join(',');
 
+        // Variações
         let htmlVariacoes = temVariacoes ? `<div class="p-variations">` : "";
         if (temVariacoes) {
             p.variacoes.forEach((v, idx) => {
                 const active = idx === 0 ? 'active' : '';
                 const precoVar = v.preco ? parseFloat(v.preco) : precoBase;
-                htmlVariacoes += `<button class="var-pill ${active}" onclick="window.selecionarVariacao('${id}', '${v.nome}', ${precoVar}, this)">${v.nome}</button>`;
+                htmlVariacoes += `<button class="var-pill ${active}" onclick="event.stopPropagation(); window.selecionarVariacao('${id}', '${v.nome}', ${precoVar}, this)">${v.nome}</button>`;
             });
             htmlVariacoes += `</div>`;
             if(p.variacoes[0].preco) precoBase = parseFloat(p.variacoes[0].preco);
         }
 
+        // Acabamentos
+        let htmlAcabamentos = temAcabamentos ? `<div class="p-finishes" style="margin: 10px 0; display: flex; flex-wrap: wrap; gap: 8px;">` : "";
+        if (temAcabamentos) {
+            p.acabamentos.forEach((a) => {
+                const valorAdicional = parseFloat(a.adicional || 0);
+                const labelPreco = valorAdicional > 0 ? ` (+R$ ${valorAdicional.toFixed(2).replace('.', ',')})` : "";
+                htmlAcabamentos += `
+                    <label onclick="event.stopPropagation()" style="font-size: 0.75rem; background: #f1f2f6; padding: 6px 10px; border-radius: 6px; cursor: pointer; display: flex; align-items: center; gap: 6px; border: 1px solid #ddd;">
+                        <input type="checkbox" class="finish-check-${id}" data-nome="${a.nome}" data-adicional="${valorAdicional}" onchange="window.recalcularPreco('${id}')"> 
+                        ${a.nome}${labelPreco}
+                    </label>`;
+            });
+            htmlAcabamentos += `</div>`;
+        }
+
+        // O card agora tem um link de redirecionamento, exceto nos botões internos
         card.innerHTML = `
-            <div class="promo-img" style="background-image: url('${p.imagem || ''}')"></div>
+            <div class="promo-img" style="background-image: url('${p.imagem || ''}'); cursor:pointer" onclick="window.location.href='/produto/index.html?id=${id}'"></div>
             <div class="p-content">
-                <h3>${p.nome}</h3>
-                <p class="p-desc">${p.descricao || ''}</p>
+                <h3 style="cursor:pointer" onclick="window.location.href='/produto/index.html?id=${id}'">${p.nome}</h3>
+                <p class="p-desc" style="white-space: pre-line;">${p.descricao || ''}</p>
                 ${htmlVariacoes}
+                ${htmlAcabamentos}
                 <span class="new-price" id="price-display-${id}">R$ ${precoBase.toFixed(2).replace('.', ',')}</span>
-                <div class="qty-control">
+                <div class="qty-control" onclick="event.stopPropagation()">
                     <button onclick="window.changeQty('${id}', -1)">-</button>
                     <input type="number" id="qty-${id}" value="1" readonly>
                     <button onclick="window.changeQty('${id}', 1)">+</button>
                 </div>
-                <button class="btn-add" id="btn-${id}" data-current-price="${precoBase}" data-current-var="${temVariacoes ? p.variacoes[0].nome : ''}" onclick="window.prepararAdicao('${id}', '${p.nome}')">
+                <button class="btn-add" id="btn-${id}" 
+                    data-base-price="${precoBase}" 
+                    data-current-var="${temVariacoes ? p.variacoes[0].nome : ''}" 
+                    onclick="event.stopPropagation(); window.prepararAdicao('${id}', '${p.nome}')">
                     Adicionar ao Pedido
                 </button>
             </div>`;
         gridProdutos.appendChild(card);
     });
 }
+// --- LÓGICA DE PREÇO E SELEÇÃO ---
+
+window.recalcularPreco = (id) => {
+    const btn = document.getElementById(`btn-${id}`);
+    let precoBase = parseFloat(btn.dataset.basePrice);
+    let adicional = 0;
+    
+    document.querySelectorAll(`.finish-check-${id}:checked`).forEach(el => {
+        adicional += parseFloat(el.dataset.adicional);
+    });
+
+    const precoFinal = precoBase + adicional;
+    document.getElementById(`price-display-${id}`).innerText = `R$ ${precoFinal.toFixed(2).replace('.', ',')}`;
+};
+
+window.selecionarVariacao = (prodId, varNome, preco, elemento) => {
+    const card = document.getElementById(`card-${prodId}`);
+    card.querySelectorAll('.var-pill').forEach(btn => btn.classList.remove('active'));
+    elemento.classList.add('active');
+    
+    const btn = document.getElementById(`btn-${prodId}`);
+    btn.dataset.basePrice = preco; 
+    btn.dataset.currentVar = varNome;
+    
+    window.recalcularPreco(prodId);
+};
 
 window.changeQty = (id, delta) => {
     const input = document.getElementById(`qty-${id}`);
@@ -188,29 +237,41 @@ window.changeQty = (id, delta) => {
     if (val >= 1) input.value = val;
 };
 
-window.selecionarVariacao = (prodId, varNome, preco, elemento) => {
-    const card = document.getElementById(`card-${prodId}`);
-    card.querySelectorAll('.var-pill').forEach(btn => btn.classList.remove('active'));
-    elemento.classList.add('active');
-    document.getElementById(`price-display-${prodId}`).innerText = `R$ ${parseFloat(preco).toFixed(2).replace('.', ',')}`;
-    const btn = document.getElementById(`btn-${prodId}`);
-    btn.dataset.currentPrice = preco;
-    btn.dataset.currentVar = varNome;
-};
+// --- CARRINHO E ADIÇÃO ---
 
 window.prepararAdicao = (id, nomeOriginal) => {
     const btn = document.getElementById(`btn-${id}`);
-    const preco = parseFloat(btn.dataset.currentPrice);
+    const precoBase = parseFloat(btn.dataset.basePrice);
     const variacao = btn.dataset.currentVar;
     const qtd = parseInt(document.getElementById(`qty-${id}`).value);
-    const nomeFinal = variacao ? `${nomeOriginal} (${variacao})` : nomeOriginal;
-    window.addToCart(variacao ? `${id}-${variacao.replace(/\s+/g, '')}` : id, nomeFinal, preco, qtd);
+    
+    let extrasNomes = [];
+    let precoAdicionalTotal = 0;
+    
+    document.querySelectorAll(`.finish-check-${id}:checked`).forEach(el => {
+        extrasNomes.push(el.dataset.nome);
+        precoAdicionalTotal += parseFloat(el.dataset.adicional);
+    });
+
+    let nomeFinal = variacao ? `${nomeOriginal} (${variacao})` : nomeOriginal;
+    if(extrasNomes.length > 0) {
+        nomeFinal += ` + ${extrasNomes.join(' + ')}`;
+    }
+
+    const precoFinal = precoBase + precoAdicionalTotal;
+    const comboId = `${id}-${variacao}-${extrasNomes.join('-')}`.replace(/\s+/g, '');
+
+    window.addToCart(comboId, nomeFinal, precoFinal, qtd);
 };
 
 window.addToCart = (id, nome, preco, qtd) => {
     const idx = cart.findIndex(i => i.id === id);
-    if(idx > -1) { cart[idx].qty += qtd; cart[idx].subtotal = cart[idx].qty * preco; }
-    else { cart.push({ id, nome, preco, qty: qtd, subtotal: preco * qtd }); }
+    if(idx > -1) { 
+        cart[idx].qty += qtd; 
+        cart[idx].subtotal = cart[idx].qty * preco; 
+    } else { 
+        cart.push({ id, nome, preco, qty: qtd, subtotal: preco * qtd }); 
+    }
     updateCart();
     
     const originalId = id.split('-')[0];
@@ -247,6 +308,8 @@ function updateCart() {
 }
 
 window.removeItem = (i) => { cart.splice(i, 1); updateCart(); };
+
+// --- FINALIZAÇÃO ---
 
 const btnCheckout = document.getElementById('checkout-whatsapp');
 if(btnCheckout) {
