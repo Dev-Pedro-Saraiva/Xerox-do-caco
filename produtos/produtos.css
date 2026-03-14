@@ -159,8 +159,6 @@ body { background: var(--white); color: var(--text); overflow-x: hidden; }
 .logo img { height: 50px; }
 
 
-
-
 /* ============================================================
    VARIÁVEIS E BASE (MANTIDOS)
    ============================================================ */
@@ -175,8 +173,9 @@ body { background: var(--white); color: var(--text); overflow-x: hidden; }
 
 * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Plus Jakarta Sans', sans-serif; }
 body { background: var(--white); color: var(--text); overflow-x: hidden; }
+.container { max-width: 1200px; margin: 0 auto; padding: 0 25px; }
 
-/* NAVBAR FIXA */
+/* NAVBAR */
 .navbar {
     background: rgba(255, 255, 255, 0.95);
     backdrop-filter: blur(10px);
@@ -186,118 +185,126 @@ body { background: var(--white); color: var(--text); overflow-x: hidden; }
     display: flex; align-items: center;
     border-bottom: 1px solid rgba(0,0,0,0.05);
 }
-.nav-wrapper { display: flex; justify-content: space-between; align-items: center; width: 100%; max-width: 1200px; margin: 0 auto; padding: 0 20px; }
-.logo img { height: 45px; }
+.nav-wrapper { display: flex; justify-content: space-between; align-items: center; width: 100%; }
+.logo img { height: 50px; }
 
-/* BOTÃO MOBILE */
+/* MENU DESKTOP */
+.nav-links { display: flex; list-style: none; gap: 30px; }
+.nav-links a { text-decoration: none; color: var(--dark); font-weight: 700; transition: var(--transition); font-size: 0.9rem; }
+.nav-links a.active { color: var(--primary); }
+
+/* BOTÃO MOBILE (HAMBURGUER) */
 .btn-mobile { 
     display: none; 
-    background: none; border: none; cursor: pointer; padding: 10px; z-index: 1001;
+    background: none; 
+    border: none; 
+    cursor: pointer; 
+    padding: 10px; 
+    z-index: 1001;
 }
-#hamburger { display: block; width: 22px; border-top: 2px solid var(--dark); position: relative; }
-#hamburger::after, #hamburger::before { content: ''; display: block; width: 22px; height: 2px; background: var(--dark); margin-top: 6px; transition: 0.3s; }
-
-
+#hamburger { 
+    display: block; 
+    width: 25px; 
+    border-top: 2px solid var(--dark); 
+    position: relative; 
+}
+#hamburger::after, #hamburger::before { 
+    content: ''; 
+    display: block; 
+    width: 25px; 
+    height: 2px; 
+    background: var(--dark); 
+    margin-top: 6px; 
+    transition: 0.3s; 
+}
 
 /* ============================================================
-   RESPONSIVO MOBILE (2 PRODUTOS POR LINHA)
+   LAYOUT DO CATÁLOGO (PRODUTOS)
+   ============================================================ */
+.promo-grid { 
+    display: grid; 
+    grid-template-columns: repeat(4, 1fr); 
+    gap: 20px; 
+}
+
+.promo-card { 
+    background: white; 
+    border-radius: 18px; 
+    border: 1px solid #eee; 
+    display: flex; 
+    flex-direction: column; 
+    transition: var(--transition);
+    height: 100%; /* Garante altura igual no grid */
+}
+
+.promo-img { 
+    height: 180px; 
+    width: calc(100% - 30px);
+    margin: 15px;
+    background-size: contain; 
+    background-repeat: no-repeat; 
+    background-position: center; 
+}
+
+.p-content { padding: 15px; flex-grow: 1; display: flex; flex-direction: column; }
+
+/* ============================================================
+   RESPONSIVO ORGANIZADO (MOBILE)
    ============================================================ */
 @media (max-width: 1024px) {
-    /* 1. Navbar e Menu */
-    .btn-mobile { 
-        display: block; 
-    }
+    /* 1. Navbar e Menu Mobile */
+    .btn-mobile { display: block; }
     
+    .header-right .btn-primary-mini { display: none; } /* Esconde o botão extra no mobile para limpar o topo */
+
     #mobile-menu { 
         display: none;
         position: absolute; 
-        top: 80px; left: 0; width: 100%; 
-        background: white; padding: 20px; 
+        top: 80px; 
+        left: 0; 
+        width: 100%; 
+        background: white; 
+        padding: 20px; 
         box-shadow: 0 10px 15px rgba(0,0,0,0.1);
-        z-index: 1100;
+        z-index: 999;
     }
+
     #mobile-menu.active { display: block; animation: slideDown 0.3s ease-out; }
 
-    /* 2. Carrinho (Garantindo que apareça sobre tudo) */
-    .cart-sidebar {
-        width: 100% !important; /* Tela cheia no celular para facilitar o uso */
-        z-index: 3000 !important; 
-    }
-    .cart-overlay { 
-        z-index: 2900 !important; 
-    }
+    .nav-links { flex-direction: column; gap: 10px; text-align: center; }
 
-    /* 3. Grid de Produtos: 2 Colunas (Equilíbrio Perfeito) */
-    .promo-grid { 
-        grid-template-columns: repeat(2, 1fr) !important; 
-        gap: 12px !important; 
-        padding: 0 10px;
-    }
-
-    .promo-card {
-        border-radius: 14px;
-        background: #fff;
-    }
-
-    .promo-img { 
-        height: 140px !important; /* Tamanho ideal para 2 colunas */
-        margin: 10px auto;
-        width: 90%;
-    }
-
-    .p-content { 
-        padding: 12px; 
-    }
-
-    .p-content h3 { 
-        font-size: 0.85rem !important; 
-        line-height: 1.2;
-        height: 2.4em; /* Mostra até 2 linhas do título */
-    }
-
-    .p-desc { 
-        display: none; /* Mantém limpo, focado no título e preço */
-    }
-    
-    .new-price { 
-        font-size: 1.1rem !important; 
-        margin: 5px 0 10px 0; 
-    }
-
-    /* 4. Controles e Botões */
-    .qty-control { 
-        gap: 8px; 
-        padding: 4px; 
-        margin-bottom: 8px;
-    }
-    
-    .qty-control button { width: 25px; height: 25px; }
-    
-    .btn-add { 
-        width: 100%;
-        padding: 10px; 
-        font-size: 0.8rem; 
-        border-radius: 10px; 
-    }
-
-    /* 5. Filtros Horizontais */
-    .catalogo-layout { flex-direction: column; }
-    .sidebar { width: 100%; margin-bottom: 15px; }
+    /* 2. Filtros Laterais (Virão horizontal) */
+    .catalogo-layout { flex-direction: column; gap: 20px; }
+    .sidebar { width: 100%; }
     .filtros-lista { 
         display: flex; 
         flex-direction: row; 
         overflow-x: auto; 
-        gap: 8px; 
-        padding: 5px 0;
-        scrollbar-width: none; /* Esconde scroll no Firefox */
+        gap: 10px; 
+        padding-bottom: 10px;
+        -webkit-overflow-scrolling: touch;
     }
-    .filtros-lista::-webkit-scrollbar { display: none; } /* Esconde scroll no Chrome/Safari */
+    .filter-btn { white-space: nowrap; padding: 10px 20px; flex-shrink: 0; }
+
+    /* 3. CORREÇÃO DOS CARDS (O PONTO QUE VOCÊ PEDIU) */
+    .promo-grid { 
+        grid-template-columns: 1fr; /* 1 card por linha para não ficar "curto e feio" */
+        gap: 20px; 
+    }
+
+    .promo-card {
+        max-width: 100%;
+        margin: 0 auto;
+    }
+
+    .promo-img { 
+        height: 250px; /* Aumenta a foto no mobile para dar destaque */
+        width: auto;
+    }
+
+    .p-content h3 { height: auto; font-size: 1.1rem; } /* Título respira melhor */
     
-    .filter-btn { 
-        white-space: nowrap; 
-        font-size: 0.85rem; 
-        padding: 10px 16px; 
-    }
+    .qty-control { padding: 10px; } /* Botões de quantidade maiores para o dedo */
 }
 
 @keyframes slideDown {
@@ -305,7 +312,129 @@ body { background: var(--white); color: var(--text); overflow-x: hidden; }
     to { opacity: 1; transform: translateY(0); }
 }
 
+.footer { padding: 40px 0; text-align: center; border-top: 1px solid #eee; }
 
 
+/* ============================================================
+   ESTILOS NOVOS: BUSCA E CASCATA
+   ============================================================ */
 
+/* Barra de Busca na Navbar */
+.search-container {
+    background: var(--light);
+    border-radius: 50px;
+    padding: 8px 18px;
+    display: flex;
+    align-items: center;
+    border: 1px solid #eee;
+    flex-grow: 1;
+    max-width: 300px;
+    margin: 0 20px;
+}
+.search-container input {
+    border: none;
+    background: transparent;
+    outline: none;
+    width: 100%;
+    font-size: 0.85rem;
+    color: var(--dark);
+}
+.search-icon { font-size: 1rem; margin-left: 8px; cursor: pointer; }
 
+/* Categorias em Cascata (Sidebar) */
+.cat-group { margin-bottom: 5px; }
+
+.sub-menu-list {
+    display: none; /* Escondido por padrão */
+    flex-direction: column;
+    padding: 5px 0 10px 20px;
+    gap: 4px;
+}
+
+/* Quando a categoria pai estiver ativa, mostra a lista de baixo */
+.cat-group.active .sub-menu-list {
+    display: flex;
+    animation: slideDown 0.3s ease-out;
+}
+
+.sub-link {
+    font-size: 0.8rem;
+    color: var(--text);
+    cursor: pointer;
+    padding: 8px 12px;
+    border-radius: 8px;
+    transition: var(--transition);
+}
+.sub-link:hover, .sub-link.active {
+    background: var(--light);
+    color: var(--primary);
+    font-weight: 700;
+}
+
+/* Ajuste Mobile para Busca */
+@media (max-width: 1024px) {
+    .search-container {
+        max-width: 100%;
+        margin: 10px 0;
+        order: 3; /* Move para baixo do logo no mobile */
+    }
+}
+
+/* MANTENDO SEU CSS ORIGINAL ABAIXO... */
+:root {
+    --primary: #27ae60;
+    --dark: #0f172a;
+    --text: #475569;
+    --light: #f8fafc;
+    --white: #ffffff;
+    --transition: 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+* { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Plus Jakarta Sans', sans-serif; }
+body { background: var(--white); color: var(--text); overflow-x: hidden; }
+.container { max-width: 1200px; margin: 0 auto; padding: 0 25px; }
+
+.navbar {
+    background: rgba(255, 255, 255, 0.95);
+    backdrop-filter: blur(10px);
+    height: 80px;
+    position: sticky;
+    top: 0; z-index: 1000;
+    display: flex; align-items: center;
+    border-bottom: 1px solid rgba(0,0,0,0.05);
+}
+.nav-wrapper { display: flex; justify-content: space-between; align-items: center; width: 100%; }
+.logo img { height: 50px; }
+.nav-links { display: flex; list-style: none; gap: 30px; }
+.nav-links a { text-decoration: none; color: var(--dark); font-weight: 700; transition: var(--transition); font-size: 0.9rem; }
+.nav-links a.active { color: var(--primary); }
+
+.catalogo-layout { display: flex; gap: 40px; margin-top: 40px; }
+.sidebar { width: 240px; flex-shrink: 0; }
+.sidebar-sticky { position: sticky; top: 110px; }
+.sidebar-title { font-size: 1.1rem; font-weight: 800; color: var(--dark); margin-bottom: 20px; }
+
+.filtros-lista { display: flex; flex-direction: column; gap: 6px; }
+.filter-btn { 
+    background: transparent; border: 1px solid transparent; text-align: left;
+    padding: 12px 16px; border-radius: 12px; cursor: pointer;
+    font-weight: 700; color: var(--text); transition: var(--transition);
+    width: 100%;
+}
+.filter-btn:hover { background: var(--light); color: var(--primary); }
+.filter-btn.active { background: var(--primary); color: white; }
+
+.promo-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 20px; }
+.promo-card { background: white; border-radius: 18px; border: 1px solid #eee; display: flex; flex-direction: column; transition: var(--transition); }
+.promo-img { height: 180px; background-size: contain; background-repeat: no-repeat; background-position: center; margin: 15px; }
+.p-content { padding: 15px; flex-grow: 1; display: flex; flex-direction: column; }
+.new-price { font-size: 1.2rem; color: var(--primary); font-weight: 800; margin-bottom: 12px; }
+
+.qty-control { display: flex; align-items: center; gap: 10px; background: var(--light); border-radius: 10px; padding: 5px; margin-bottom: 10px; justify-content: center; }
+.qty-control button { border: none; background: white; width: 28px; height: 28px; border-radius: 6px; cursor: pointer; font-weight: 800; }
+.qty-control input { width: 35px; text-align: center; border: none; background: transparent; font-weight: 700; }
+.btn-add { background: var(--dark); color: white; border: none; padding: 12px; border-radius: 12px; font-weight: 700; cursor: pointer; }
+
+/* Variações */
+.p-variations { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 12px; }
+.var-pill { background: #f1f2f6; border: 1px solid #dfe6e9; padding: 4px 10px; border-radius: 6px; font-size: 0.7rem; font-weight: 700; cursor: pointer; color: #636e72; }
+.var-pill.active { background: var(--dark); color: white; }
