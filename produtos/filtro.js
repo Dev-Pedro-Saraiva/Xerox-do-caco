@@ -61,7 +61,7 @@ if(inputBusca) {
 async function loadData() {
     const catSnap = await getDocs(query(collection(db, "categorias"), orderBy("ordem", "asc")));
     todasCategorias = catSnap.docs.map(d => d.data());
-    renderCategories();
+    renderCategories(); // Inicia no menu principal
 
     const prodSnap = await getDocs(query(collection(db, "produtos"), orderBy("ordem", "asc")));
     todosProdutosDocs = prodSnap.docs;
@@ -69,66 +69,69 @@ async function loadData() {
     updateCart();
 }
 
-function renderCategories() {
+// --- NAVEGAÇÃO DE CATEGORIAS EM CAMADAS ---
+function renderCategories(categoriaPaiNome = null) {
     const container = document.getElementById('filtros-principais');
     if(!container) return;
     
-    container.innerHTML = `<button class="filter-btn active" id="btn-all">Tudo</button>`;
-    document.getElementById('btn-all').onclick = () => {
-        resetActiveFilters();
-        document.getElementById('btn-all').classList.add('active');
-        filtrarCards('all');
-    };
+    container.innerHTML = ""; 
 
-    todasCategorias.filter(c => !c.parentID).forEach(cat => {
-        const group = document.createElement('div');
-        group.className = 'cat-group';
-        
-        const btn = document.createElement('button');
-        btn.className = 'filter-btn';
-        btn.innerText = cat.nome;
+    // MODO SUB-CATEGORIA (Camada 2)
+    if (categoriaPaiNome) {
+        const btnVoltar = document.createElement('button');
+        btnVoltar.className = 'filter-btn btn-voltar';
+        btnVoltar.innerHTML = '← Voltar';
+        btnVoltar.onclick = () => {
+            renderCategories(); // Volta para camada 1
+            filtrarCards('all');
+        };
+        container.appendChild(btnVoltar);
 
-        const subList = document.createElement('div');
-        subList.className = 'sub-menu-list';
-        
-        const subs = todasCategorias.filter(s => s.parentID === cat.nome);
+        const subs = todasCategorias.filter(s => s.parentID === categoriaPaiNome);
         subs.forEach(s => {
-            const subItem = document.createElement('span');
-            subItem.className = 'sub-link';
-            subItem.innerText = s.nome;
-            subItem.onclick = (e) => {
-                e.stopPropagation();
-                document.querySelectorAll('.sub-link').forEach(l => l.classList.remove('active'));
-                subItem.classList.add('active');
+            const btnSub = document.createElement('button');
+            btnSub.className = 'filter-btn';
+            btnSub.innerText = s.nome;
+            btnSub.onclick = () => {
+                document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+                btnSub.classList.add('active');
                 filtrarCards(s.nome);
             };
-            subList.appendChild(subItem);
+            container.appendChild(btnSub);
         });
 
-        btn.onclick = () => {
-            const isAlreadyActive = group.classList.contains('active');
+    } else {
+        // MODO MENU PRINCIPAL (Camada 1)
+        const btnAll = document.createElement('button');
+        btnAll.className = 'filter-btn active';
+        btnAll.id = 'btn-all';
+        btnAll.innerText = 'Tudo';
+        btnAll.onclick = () => {
             resetActiveFilters();
-            
-            if (!isAlreadyActive) {
-                group.classList.add('active');
-                btn.classList.add('active');
-                filtrarCards(cat.nome);
-            } else {
-                document.getElementById('btn-all').classList.add('active');
-                filtrarCards('all');
-            }
+            btnAll.classList.add('active');
+            filtrarCards('all');
         };
+        container.appendChild(btnAll);
 
-        group.appendChild(btn);
-        group.appendChild(subList);
-        container.appendChild(group);
-    });
+        todasCategorias.filter(c => !c.parentID).forEach(cat => {
+            const btn = document.createElement('button');
+            btn.className = 'filter-btn';
+            btn.innerText = cat.nome;
+
+            btn.onclick = () => {
+                const temFilhos = todasCategorias.some(s => s.parentID === cat.nome);
+                if (temFilhos) {
+                    renderCategories(cat.nome); // Entra na sub-camada
+                }
+                filtrarCards(cat.nome);
+            };
+            container.appendChild(btn);
+        });
+    }
 }
 
 function resetActiveFilters() {
-    document.querySelectorAll('.cat-group').forEach(g => g.classList.remove('active'));
     document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
-    document.querySelectorAll('.sub-link').forEach(l => l.classList.remove('active'));
 }
 
 function filtrarCards(termo) {
@@ -136,9 +139,13 @@ function filtrarCards(termo) {
         const cats = card.dataset.category.split(',');
         card.style.display = (termo === 'all' || cats.includes(termo)) ? 'flex' : 'none';
     });
+    // Auto-scroll para o topo dos produtos no mobile
+    if(window.innerWidth < 1024) {
+        window.scrollTo({ top: gridProdutos.offsetTop - 120, behavior: 'smooth' });
+    }
 }
 
-// --- RENDERIZAR PRODUTOS (COM ACABAMENTOS) ---
+// --- RENDERIZAR PRODUTOS ---
 function renderProducts(docs) {
     gridProdutos.innerHTML = "";
     docs.forEach(docSnap => {
@@ -180,12 +187,11 @@ function renderProducts(docs) {
             htmlAcabamentos += `</div>`;
         }
 
-        // O card agora tem um link de redirecionamento, exceto nos botões internos
         card.innerHTML = `
             <div class="promo-img" style="background-image: url('${p.imagem || ''}'); cursor:pointer" onclick="window.location.href='/produto/index.html?id=${id}'"></div>
             <div class="p-content">
-                <h3 style="cursor:pointer" onclick="window.location.href='/produto/index.html?id=${id}'">${p.nome}</h3>
-                <p class="p-desc" style="white-space: pre-line;">${p.descricao || ''}</p>
+                <h3 style="cursor:pointer; margin-bottom: 8px;" onclick="window.location.href='/produto/index.html?id=${id}'">${p.nome}</h3>
+                <p class="p-desc" style="white-space: pre-line; margin-bottom: 12px;">${p.descricao || ''}</p>
                 ${htmlVariacoes}
                 ${htmlAcabamentos}
                 <span class="new-price" id="price-display-${id}">R$ ${precoBase.toFixed(2).replace('.', ',')}</span>
@@ -204,6 +210,7 @@ function renderProducts(docs) {
         gridProdutos.appendChild(card);
     });
 }
+
 // --- LÓGICA DE PREÇO E SELEÇÃO ---
 
 window.recalcularPreco = (id) => {
