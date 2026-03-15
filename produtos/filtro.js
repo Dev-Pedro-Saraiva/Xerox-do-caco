@@ -138,40 +138,34 @@ function renderProducts(docs) {
     gridProdutos.innerHTML = "";
     docs.forEach(docSnap => {
         const p = docSnap.data();
-        const id = docSnap.id;
+        const id = docSnap.id; // Esse é o ID do Firebase
         let precoBase = parseFloat(p.precoBase || 0);
         
         const card = document.createElement('div');
         card.className = 'promo-card';
         card.dataset.category = [...(p.categorias || []), ...(p.subcategorias || [])].join(',');
 
-        let htmlVariacoes = "";
-        if (p.variacoes && p.variacoes.length > 0) {
-            htmlVariacoes = `<div class="p-variations">`;
-            p.variacoes.forEach((v, idx) => {
-                const active = idx === 0 ? 'active' : '';
-                const pVar = v.preco ? parseFloat(v.preco) : precoBase;
-                htmlVariacoes += `<button class="var-pill ${active}" onclick="window.selecionarVariacao('${id}', '${v.nome}', ${pVar}, this)">${v.nome}</button>`;
-            });
-            htmlVariacoes += `</div>`;
-            if (p.variacoes[0].preco) precoBase = parseFloat(p.variacoes[0].preco);
-        }
-
+        // MÁGICA AQUI: O clique na imagem ou no título redireciona para a página de detalhes
         card.innerHTML = `
-            <div class="promo-img" style="background-image: url('${p.imagem || ''}')"></div>
+            <div class="promo-img" 
+                 style="background-image: url('${p.imagem || ''}'); cursor: pointer;" 
+                 onclick="window.location.href='/produto/index.html?id=${id}'">
+            </div>
             <div class="p-content">
-                <h3>${p.nome}</h3>
-                ${htmlVariacoes}
+                <h3 style="cursor: pointer;" 
+                    onclick="window.location.href='/produto/index.html?id=${id}'">
+                    ${p.nome}
+                </h3>
+                
                 <span class="new-price" id="price-${id}">R$ ${precoBase.toFixed(2).replace('.', ',')}</span>
-                <div class="qty-control">
-                    <button onclick="window.changeQty('${id}', -1)">-</button>
-                    <input type="number" id="qty-${id}" value="1" readonly>
-                    <button onclick="window.changeQty('${id}', 1)">+</button>
+                
+                <div class="card-footer-buttons" style="display: flex; gap: 10px; margin-top: 15px;">
+                    <button class="btn-add" 
+                        onclick="window.location.href='/produto/detalhe.html?id=${id}'" 
+                        style="width: 100%; background: var(--primary);">
+                        Ver Detalhes
+                    </button>
                 </div>
-                <button class="btn-add" id="btn-${id}" 
-                    data-price="${precoBase}" 
-                    data-var="${p.variacoes?.[0]?.nome || ''}" 
-                    onclick="window.prepararAdicao('${id}', '${p.nome}')">Adicionar</button>
             </div>`;
         gridProdutos.appendChild(card);
     });
