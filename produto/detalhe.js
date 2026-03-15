@@ -182,29 +182,45 @@ function recalcularPrecoTotal(p) {
 async function loadRelatedProducts(currentProduct, currentId) {
     const grid = document.getElementById('related-grid');
     const container = document.getElementById('related-container');
-    const termo = currentProduct.subcategorias?.[0] || currentProduct.categorias?.[0];
+    
+    // Tenta pegar subcategoria, se não tiver, tenta categoria
+    const termo = (currentProduct.subcategorias && currentProduct.subcategorias.length > 0) 
+                  ? currentProduct.subcategorias[0] 
+                  : (currentProduct.categorias && currentProduct.categorias.length > 0) 
+                  ? currentProduct.categorias[0] 
+                  : null;
+
     if (!termo) return;
 
     try {
-        const campoFiltro = currentProduct.subcategorias?.[0] ? "subcategorias" : "categorias";
+        const campoFiltro = currentProduct.subcategorias?.length > 0 ? "subcategorias" : "categorias";
         const q = query(collection(db, "produtos"), where(campoFiltro, "array-contains", termo), limit(5));
         const snap = await getDocs(q);
+        
         let html = "";
         snap.forEach(docSnap => {
             const p = docSnap.data();
+            // Só mostra se não for o próprio produto que já está aberto
             if (docSnap.id !== currentId) {
+                // CORREÇÃO AQUI: Mudamos o link para apenas '?id=' para recarregar a mesma página com o novo ID
                 html += `
-                <div class="promo-card" onclick="window.location.href='index.html?id=${docSnap.id}'" style="cursor:pointer">
+                <div class="promo-card" onclick="window.location.href='?id=${docSnap.id}'" style="cursor:pointer">
                     <div class="promo-img" style="background-image: url('${p.imagem}')"></div>
                     <div class="p-content">
                         <h3>${p.nome}</h3>
-                        <span class="new-price">R$ ${parseFloat(p.precoBase).toFixed(2).replace('.', ',')}</span>
+                        <span class="new-price">R$ ${parseFloat(p.precoBase || 0).toFixed(2).replace('.', ',')}</span>
                     </div>
                 </div>`;
             }
         });
-        if (html !== "") { grid.innerHTML = html; container.style.display = "block"; }
-    } catch (e) { console.error(e); }
+
+        if (html !== "") { 
+            grid.innerHTML = html; 
+            container.style.display = "block"; 
+        }
+    } catch (e) { 
+        console.error("Erro ao carregar relacionados:", e); 
+    }
 }
 
 loadProduct();
