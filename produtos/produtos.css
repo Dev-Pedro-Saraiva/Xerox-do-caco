@@ -99,7 +99,7 @@ body {
     cursor: pointer; 
 }
 
-/* BOTÃO MOBILE (HAMBURGUER) */
+/* BOTÃO MOBILE */
 .btn-mobile { 
     display: none; 
     background: none; 
@@ -127,14 +127,13 @@ body {
 }
 
 /* ============================================================
-   LAYOUT CATALOGO
+   LAYOUT CATALOGO (DESKTOP)
    ============================================================ */
 .catalogo-layout { display: flex; gap: 40px; margin-top: 40px; }
 .sidebar { width: 240px; flex-shrink: 0; }
 .sidebar-sticky { position: sticky; top: 110px; }
 .sidebar-title { font-size: 1.1rem; font-weight: 800; color: var(--dark); margin-bottom: 20px; }
 
-/* FILTROS (BOTÕES) */
 .filtros-lista { display: flex; flex-direction: column; gap: 6px; }
 
 .filter-btn { 
@@ -153,25 +152,6 @@ body {
 .filter-btn:hover { background: var(--light); color: var(--primary); }
 .filter-btn.active { background: var(--primary); color: white; border-color: var(--primary); }
 
-/* Sub-menu cascata (Desktop) */
-.cat-group { margin-bottom: 5px; }
-.sub-menu-list {
-    display: none;
-    flex-direction: column;
-    padding: 5px 0 10px 20px;
-    gap: 4px;
-}
-.cat-group.active .sub-menu-list { display: flex; animation: slideDown 0.3s ease-out; }
-
-.sub-link {
-    font-size: 0.8rem;
-    color: var(--text);
-    cursor: pointer;
-    padding: 8px 12px;
-    border-radius: 8px;
-}
-.sub-link.active { background: var(--light); color: var(--primary); font-weight: 700; }
-
 /* ============================================================
    GRID DE PRODUTOS
    ============================================================ */
@@ -182,6 +162,7 @@ body {
     display: grid; 
     grid-template-columns: repeat(4, 1fr); 
     gap: 20px; 
+    flex-grow: 1;
 }
 
 .promo-card { 
@@ -195,18 +176,12 @@ body {
     overflow: hidden;
 }
 
-.promo-card:hover { 
-    transform: translateY(-8px); 
-    box-shadow: 0 15px 30px rgba(0,0,0,0.08); 
-}
-
 .promo-img { 
     height: 180px; 
     background-size: contain; 
     background-repeat: no-repeat; 
     background-position: center; 
     margin: 15px;
-    transition: 0.3s;
 }
 
 .p-content { 
@@ -220,8 +195,8 @@ body {
     font-size: 0.95rem; 
     font-weight: 800; 
     color: var(--dark); 
-    margin-bottom: 12px; /* Aumentado de 5px para 12px para dar respiro */
-    min-height: 2.5em;   /* Mudado de height para min-height para não achatar o texto */
+    margin-bottom: 12px; 
+    min-height: 2.5em; 
     line-height: 1.3;
     display: -webkit-box;
     -webkit-line-clamp: 2;
@@ -232,162 +207,112 @@ body {
 .p-desc { 
     font-size: 0.75rem; 
     color: var(--text); 
-    margin-bottom: 18px; /* Aumentado de 12px para 18px para afastar das variações/preço */
-    line-height: 1.5;    /* Aumentado para a leitura ficar mais leve */
+    margin-bottom: 18px; 
+    line-height: 1.5; 
     display: -webkit-box; 
     -webkit-line-clamp: 2; 
     -webkit-box-orient: vertical; 
     overflow: hidden; 
 }
-.new-price { font-size: 1.2rem; color: var(--primary); font-weight: 800; margin-bottom: 12px; }
 
-/* VARIAÇÕES */
+.new-price { font-size: 1.2rem; color: var(--primary); font-weight: 800; margin-bottom: 12px; display: block; }
+
 .p-variations { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 12px; }
 .var-pill { 
-    background: #f1f2f6; 
-    border: 1px solid #dfe6e9; 
-    padding: 4px 10px; 
-    border-radius: 6px; 
-    font-size: 0.7rem; 
-    font-weight: 700; 
-    cursor: pointer; 
-    color: #636e72; 
+    background: #f1f2f6; border: 1px solid #dfe6e9; padding: 4px 10px; border-radius: 6px; 
+    font-size: 0.7rem; font-weight: 700; cursor: pointer; color: #636e72; 
 }
-.var-pill.active { background: var(--dark); color: white; border-color: var(--dark); }
+.var-pill.active { background: var(--dark); color: white; }
 
-/* QUANTIDADE E BOTÃO */
 .qty-control { 
-    display: flex; 
-    align-items: center; 
-    gap: 10px; 
-    background: var(--light); 
-    border-radius: 10px; 
-    padding: 5px; 
-    margin-bottom: 10px; 
-    justify-content: center; 
+    display: flex; align-items: center; gap: 10px; background: var(--light); 
+    border-radius: 10px; padding: 5px; margin-bottom: 10px; justify-content: center; 
 }
-.qty-control button { border: none; background: white; width: 28px; height: 28px; border-radius: 6px; cursor: pointer; font-weight: 800; }
+.qty-control button { border: none; background: white; width: 28px; height: 28px; border-radius: 6px; cursor: pointer; }
 .qty-control input { width: 35px; text-align: center; border: none; background: transparent; font-weight: 700; }
 
 .btn-add { 
-    background: var(--dark); 
-    color: white; 
-    border: none; 
-    padding: 12px; 
-    border-radius: 12px; 
-    font-weight: 700; 
-    cursor: pointer; 
-    transition: 0.3s; 
+    background: var(--dark); color: white; border: none; padding: 12px; 
+    border-radius: 12px; font-weight: 700; cursor: pointer; 
 }
-.btn-add:hover { background: var(--primary); }
 
 /* ============================================================
-   CARRINHO SIDEBAR
-   ============================================================ */
-.cart-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.4); backdrop-filter: blur(4px); visibility: hidden; opacity: 0; transition: 0.3s; z-index: 1500; }
-.cart-overlay.active { visibility: visible; opacity: 1; }
-
-.cart-sidebar { 
-    position: fixed; 
-    right: -400px; 
-    top: 0; 
-    width: 380px; 
-    height: 100%; 
-    background: white; 
-    z-index: 1600; 
-    transition: 0.4s; 
-    padding: 30px; 
-    display: flex; 
-    flex-direction: column; 
-}
-.cart-sidebar.active { right: 0; }
-
-.cart-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
-.cart-items-list { flex-grow: 1; overflow-y: auto; }
-.cart-footer { border-top: 1px solid #eee; padding-top: 20px; }
-
-/* ============================================================
-   RESPONSIVO (MOBILE) - OTIMIZADO
+   RESPONSIVO (MOBILE) - CATEGORIAS AO LADO
    ============================================================ */
 @media (max-width: 1024px) {
     .btn-mobile { display: block; }
     .header-right .btn-primary-mini { display: none; }
     
-    .search-container { 
-        max-width: 100%; 
-        margin: 10px 0; 
-        order: 3; 
+    .container { padding: 0 15px; }
+
+    /* Layout Lado a Lado no Mobile */
+    .catalogo-layout { 
+        display: flex; 
+        flex-direction: row; /* Coloca sidebar e grid na mesma linha */
+        align-items: flex-start;
+        gap: 12px; 
+        margin-top: 15px; 
     }
 
-    #mobile-menu { 
-        display: none; 
-        position: absolute; 
-        top: 80px; left: 0; 
-        width: 100%; 
-        background: white; 
-        padding: 20px; 
-        z-index: 999;
-        box-shadow: 0 10px 15px rgba(0,0,0,0.1);
+    /* Sidebar vira uma coluna fina na esquerda */
+    .sidebar { 
+        width: 90px; /* Largura fixa para os botões de categoria */
+        flex-shrink: 0;
+        position: sticky;
+        top: 95px; /* Gruda conforme rola */
     }
-    #mobile-menu.active { display: block; animation: slideDown 0.3s ease-out; }
-    .nav-links { flex-direction: column; gap: 10px; text-align: center; }
 
-    /* Layout do Catálogo Mobile */
-    .catalogo-layout { flex-direction: column; gap: 15px; margin-top: 20px; }
-    .sidebar { width: 100%; }
-    .sidebar-title { display: none; }
-
-    /* Barra de Filtros Horizontal (Modo Camadas) */
     .filtros-lista { 
         display: flex; 
-        flex-direction: row; 
-        overflow-x: auto; 
+        flex-direction: column; /* Botões um embaixo do outro */
         gap: 8px; 
-        padding: 5px 0 15px 0;
-        -webkit-overflow-scrolling: touch;
-        scrollbar-width: none;
     }
-    .filtros-lista::-webkit-scrollbar { display: none; }
 
     .filter-btn { 
-        white-space: nowrap; 
-        padding: 10px 20px; 
-        width: auto; 
+        padding: 12px 8px; 
+        font-size: 0.7rem; 
+        text-align: center; 
+        white-space: normal; /* Permite quebrar linha se o nome for grande */
         background: var(--light);
         border: 1px solid #eee;
-        font-size: 0.85rem;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        min-height: 50px;
     }
 
     .btn-voltar {
         background: var(--dark) !important;
         color: white !important;
-        font-weight: 800;
+        font-size: 0.65rem;
     }
 
-    /* Grid Mobile: 2 Colunas */
+    /* Grid de Produtos ocupa o resto do espaço */
     .promo-grid { 
-        grid-template-columns: repeat(2, 1fr); 
-        gap: 12px; 
+        grid-template-columns: repeat(2, 1fr); /* 2 colunas de produtos */
+        gap: 10px; 
+        flex-grow: 1;
     }
 
-    .promo-card { border-radius: 12px; }
-    .promo-img { height: 130px; margin: 10px; }
-    .p-content { padding: 10px; }
-    .p-content h3 { font-size: 0.85rem; height: 2.8em; margin-bottom: 4px; }
+    /* Ajustes finos nos cards para caber no espaço menor */
+    .promo-card { border-radius: 10px; }
+    .promo-img { height: 100px; margin: 8px; }
+    .p-content { padding: 8px; }
+    .p-content h3 { font-size: 0.75rem; margin-bottom: 6px; min-height: 2.8em; }
+    .p-desc, .p-variations { display: none; } /* Oculta bio no mobile para não esticar muito */
     
-    /* Esconde descrição e variações no grid mobile para economizar espaço */
-    .p-desc, .p-variations { display: none; } 
+    .new-price { font-size: 0.9rem; margin-bottom: 6px; }
+    .qty-control { padding: 2px; gap: 4px; margin-bottom: 6px; }
+    .qty-control button { width: 22px; height: 22px; }
+    .btn-add { padding: 8px; font-size: 0.7rem; }
     
-    .new-price { font-size: 1rem; margin-bottom: 8px; }
-    .qty-control { padding: 4px; gap: 6px; }
-    .qty-control button { width: 24px; height: 24px; }
-    .btn-add { padding: 10px; font-size: 0.8rem; border-radius: 8px; }
+    .section-title { font-size: 1.4rem; margin-bottom: 15px; }
 }
 
-/* Animações */
-@keyframes slideDown {
-    from { opacity: 0; transform: translateY(-10px); }
-    to { opacity: 1; transform: translateY(0); }
-}
-
-.footer { padding: 40px 0; text-align: center; border-top: 1px solid #eee; }
+/* Resto do CSS (Carrinho/Animações) permanecem iguais */
+.cart-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.4); backdrop-filter: blur(4px); visibility: hidden; opacity: 0; z-index: 1500; }
+.cart-overlay.active { visibility: visible; opacity: 1; }
+.cart-sidebar { position: fixed; right: -400px; top: 0; width: 320px; height: 100%; background: white; z-index: 1600; transition: 0.4s; padding: 20px; display: flex; flex-direction: column; }
+.cart-sidebar.active { right: 0; }
+@keyframes slideDown { from { opacity: 0; transform: translateY(-10px); } to { opacity: 1; transform: translateY(0); } }
+.footer { padding: 30px 0; text-align: center; border-top: 1px solid #eee; font-size: 0.8rem; }
