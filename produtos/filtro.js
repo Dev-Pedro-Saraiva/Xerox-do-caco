@@ -161,7 +161,7 @@ function renderProducts(docs) {
                 
                 <div class="card-footer-buttons" style="display: flex; gap: 10px; margin-top: 15px;">
                     <button class="btn-add" 
-                        onclick="window.location.href='/produto/detalhe.html?id=${id}'" 
+                        onclick="window.location.href='/produto/index.html?id=${id}'" 
                         style="width: 100%; background: var(--primary);">
                         Ver Detalhes
                     </button>
