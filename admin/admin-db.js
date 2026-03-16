@@ -16,6 +16,7 @@ const auth = getAuth(app);
 const db = getFirestore(app);
 
 let editProdId = null;
+let editCatId = null; 
 
 // --- AUTH ---
 onAuthStateChanged(auth, (user) => {
@@ -78,13 +79,27 @@ async function loadCategories() {
         `;
         containerCats.appendChild(catDiv);
 
-        listAdmin.innerHTML += `<div class="cat-item-admin"><span><b>${c.nome}</b></span><button class="btn-edit" onclick="window.editarCat('${c.id}', '${c.nome}', ${c.ordem})">✏️</button></div>`;
+        listAdmin.innerHTML += `
+            <div class="cat-item-admin">
+                <span><b>${c.nome}</b></span>
+                <div>
+                    <button class="btn-edit" onclick="window.prepararEdicaoCat('${c.id}', '${c.nome}', '', ${c.ordem})">✏️</button>
+                    <button onclick="window.deletarCat('${c.id}')" style="border:none; background:none; cursor:pointer;">🗑️</button>
+                </div>
+            </div>`;
 
         const subs = categorias.filter(s => s.parentID === c.nome);
         const subDiv = catDiv.querySelector('.sub-container');
         subs.forEach(s => {
             subDiv.innerHTML += `<label class="checkbox-label"><input type="checkbox" name="prod-subs" value="${s.nome}"> ${s.nome}</label>`;
-            listAdmin.innerHTML += `<div class="cat-item-admin" style="margin-left:20px;"><span>└ ${s.nome}</span></div>`;
+            listAdmin.innerHTML += `
+                <div class="cat-item-admin" style="margin-left:20px;">
+                    <span>└ ${s.nome}</span>
+                    <div>
+                        <button class="btn-edit" onclick="window.prepararEdicaoCat('${s.id}', '${s.nome}', '${c.nome}', ${s.ordem})">✏️</button>
+                        <button onclick="window.deletarCat('${s.id}')" style="border:none; background:none; cursor:pointer;">🗑️</button>
+                    </div>
+                </div>`;
         });
     });
 }
@@ -93,6 +108,40 @@ window.toggleSubView = (id, show) => {
     const el = document.getElementById('subs-of-' + id);
     if(el) el.style.display = show ? 'block' : 'none';
 };
+
+// Salvar/Adicionar Categoria
+document.getElementById('btn-add-category').onclick = async () => {
+    const nome = document.getElementById('new-category-name').value;
+    const parent = document.getElementById('parent-category-select').value;
+    const ordem = parseInt(document.getElementById('new-category-order').value) || 0;
+
+    if(!nome) return alert("Digite o nome da categoria");
+
+    const dados = { nome, parentID: parent, ordem };
+
+    try {
+        if(editCatId) {
+            await updateDoc(doc(db, "categorias", editCatId), dados);
+            alert("Categoria atualizada!");
+        } else {
+            await addDoc(collection(db, "categorias"), dados);
+            alert("Categoria adicionada!");
+        }
+        location.reload();
+    } catch (e) { alert("Erro ao salvar: " + e); }
+};
+
+window.prepararEdicaoCat = (id, nome, parent, ordem) => {
+    editCatId = id;
+    document.getElementById('new-category-name').value = nome;
+    document.getElementById('parent-category-select').value = parent;
+    document.getElementById('new-category-order').value = ordem;
+    // Muda o texto do botão para indicar edição
+    document.getElementById('btn-add-category').innerText = "Atualizar Categoria";
+    window.scrollTo({top: document.body.scrollHeight, behavior: 'smooth'});
+};
+
+window.deletarCat = async (id) => { if(confirm("Excluir categoria?")) { await deleteDoc(doc(db, "categorias", id)); loadCategories(); } };
 
 // --- PRODUTOS ---
 async function renderProducts() {
@@ -125,14 +174,31 @@ window.prepararEdicao = async (id) => {
         document.getElementById('form-title').innerText = "✏️ Editando Produto";
         document.getElementById('btn-cancel-edit').style.display = "block";
 
-        // Imagens
+        document.querySelectorAll('input[name="prod-cats"], input[name="prod-subs"]').forEach(el => el.checked = false);
+        document.querySelectorAll('.sub-container').forEach(el => el.style.display = 'none');
+
+        if (p.categorias) {
+            p.categorias.forEach(catNome => {
+                const cb = document.querySelector(`input[name="prod-cats"][value="${catNome}"]`);
+                if (cb) {
+                    cb.checked = true;
+                    window.toggleSubView(catNome.replace(/\s+/g, ''), true);
+                }
+            });
+        }
+        if (p.subcategorias) {
+            p.subcategorias.forEach(subNome => {
+                const cb = document.querySelector(`input[name="prod-subs"][value="${subNome}"]`);
+                if (cb) cb.checked = true;
+            });
+        }
+
         const contImgs = document.getElementById('prod-imgs-container');
         contImgs.innerHTML = "";
         (p.imagens || [p.imagem]).forEach((url, i) => {
             contImgs.innerHTML += `<div class="dynamic-field-group"><input type="text" class="prod-img-input" value="${url}">${i>0?'<button type="button" class="btn-remove-field" onclick="this.parentElement.remove()">✕</button>':''}</div>`;
         });
 
-        // Variações e Acabamentos
         const contVars = document.getElementById('prod-variations-container');
         contVars.innerHTML = "";
         (p.variacoes || []).forEach(v => {
