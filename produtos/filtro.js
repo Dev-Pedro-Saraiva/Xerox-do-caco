@@ -251,7 +251,7 @@ document.getElementById('checkout-whatsapp').onclick = () => {
     let msg = "Olá, gostaria de fazer o pedido:\n\n";
     cart.forEach(i => msg += `*${i.qty}x* ${i.nome} - R$ ${i.subtotal.toFixed(2)}\n`);
     msg += `\n*Total: ${document.getElementById('cart-total-value').innerText}*`;
-    window.open(`https://wa.me/5591983053860?text=${encodeURIComponent(msg)}`, '_blank');
+    window.open(`https://wa.me/5591985121047?text=${encodeURIComponent(msg)}`, '_blank');
 };
 
 loadData();
