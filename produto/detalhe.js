@@ -170,6 +170,23 @@ function renderDetail(p, id) {
 
     loading.style.display = 'none';
     content.style.display = 'grid';
+
+
+// Permite que o usuário digite, mas valida o valor ao sair do campo
+qtyInput.onchange = () => {
+    let val = parseInt(qtyInput.value);
+    if (isNaN(val) || val < 1) {
+        qtyInput.value = 1;
+    } else {
+        qtyInput.value = val;
+    }
+};
+
+// Melhora a experiência mobile: ao clicar, seleciona o texto para facilitar a troca
+qtyInput.onclick = () => {
+    qtyInput.select();
+};
+
 }
 
 function recalcularPrecoTotal(p) {
