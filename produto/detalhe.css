@@ -139,3 +139,42 @@
     border-color: #39FF14;
     box-shadow: 0 0 10px rgba(57, 255, 20, 0.3);
 }
+
+/* Botão de Destaque Instagram */
+.btn-insta-destaque {
+    display: inline-flex;
+    align-items: center;
+    text-decoration: none;
+    /* Gradiente oficial Instagram: Laranja -> Rosa -> Roxo */
+    background: linear-gradient(45deg, #f09433 0%, #e6683c 25%, #dc2743 50%, #cc2366 75%, #bc1888 100%);
+    color: #ffffff !important;
+    padding: 10px 22px;
+    border-radius: 50px;
+    font-size: 0.85rem;
+    font-weight: 800;
+    margin-bottom: 20px;
+    transition: all 0.3s ease-in-out;
+    box-shadow: 0 4px 15px rgba(220, 39, 67, 0.3);
+    border: none;
+    cursor: pointer;
+}
+
+/* Estilo do ícone SVG branco para contrastar */
+.btn-insta-destaque svg {
+    width: 20px;
+    height: 20px;
+    margin-right: 10px;
+}
+
+/* Efeito de hover (passar o mouse) */
+.btn-insta-destaque:hover {
+    transform: scale(1.05);
+    box-shadow: 0 6px 20px rgba(220, 39, 67, 0.5);
+    filter: brightness(1.1);
+}
+
+/* Pequeno ajuste no título do produto */
+#detalhe-nome {
+    margin-top: 5px;
+    color: var(--texto-dark);
+}
