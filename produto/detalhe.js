@@ -21,7 +21,7 @@ const qtyInput = document.getElementById('qty-detalhe');
 const imgPrincipal = document.getElementById('view-principal');
 
 let variacaoSelecionada = null;
-let acabamentosSelecionados = []; // Array para guardar os objetos de acabamento marcados
+let acabamentosSelecionados = [];
 
 function showToast(message) {
     const oldToast = document.querySelector('.toast-notification');
@@ -59,8 +59,25 @@ function renderDetail(p, id) {
     window.history.replaceState({}, '', `${window.location.pathname}?id=${id}&produto=${nomeLimpo}`);
     document.title = `Xerox do Caco | ${p.nome}`;
 
+    // --- NOVO: LÓGICA DO BOTÃO INSTAGRAM ---
+    const instaContainer = document.getElementById('insta-container');
+    if (instaContainer) {
+        instaContainer.innerHTML = ""; 
+        if (p.linkInsta && p.linkInsta.trim() !== "") {
+            instaContainer.innerHTML = `
+                <a href="${p.linkInsta}" target="_blank" class="btn-insta-destaque">
+                    <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M12 16C14.2091 16 16 14.2091 16 12C16 9.79086 14.2091 8 12 8C9.79086 8 8 9.79086 8 12C8 14.2091 9.79086 16 12 16Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                        <path d="M3 16V8C3 5.23858 5.23858 3 8 3H16C18.7614 3 21 5.23858 21 8V16C21 18.7614 18.7614 21 16 21H8C5.23858 21 3 18.7614 3 16Z" stroke="currentColor" stroke-width="2"/>
+                        <path d="M17.5 6.51L17.51 6.49889" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                    </svg>
+                    Veja no Instagram
+                </a>
+            `;
+        }
+    }
+
     document.getElementById('detalhe-nome').innerText = p.nome;
-    // pre-line para respeitar as quebras de linha que você fizer no painel
     document.getElementById('detalhe-desc').style.whiteSpace = "pre-line";
     document.getElementById('detalhe-desc').innerText = p.descricao || 'Qualidade garantida.';
     
@@ -86,7 +103,7 @@ function renderDetail(p, id) {
         });
     }
 
-    // --- LÓGICA DE ACABAMENTOS (Botões de Bolinha/Pill) ---
+    // --- LÓGICA DE ACABAMENTOS ---
     const containerFinishes = document.getElementById('detalhe-acabamentos');
     containerFinishes.innerHTML = p.acabamentos?.length > 0 ? "<h4>Acabamentos:</h4>" : "";
 
@@ -112,7 +129,7 @@ function renderDetail(p, id) {
 
     recalcularPrecoTotal(p);
 
-    // Thumbs, Qty e Galeria (Inalterados)
+    // Thumbs e Galeria
     const containerThumbs = document.getElementById('thumbs');
     containerThumbs.innerHTML = "";
     const imagens = p.imagens?.length > 0 ? p.imagens : [p.imagem];
@@ -128,10 +145,11 @@ function renderDetail(p, id) {
         containerThumbs.appendChild(img);
     });
 
+    // Controles de Quantidade
     document.getElementById('qty-plus').onclick = () => { qtyInput.value = parseInt(qtyInput.value) + 1; };
     document.getElementById('qty-minus').onclick = () => { if(parseInt(qtyInput.value) > 1) qtyInput.value = parseInt(qtyInput.value) - 1; };
 
-    // --- BOTÃO ADICIONAR ---
+    // --- BOTÃO ADICIONAR AO PEDIDO ---
     document.getElementById('btn-add-detalhe').onclick = () => {
         let cart = JSON.parse(localStorage.getItem('ferroforte_cart')) || [];
         const qtd = parseInt(qtyInput.value);
@@ -140,7 +158,6 @@ function renderDetail(p, id) {
         let adicionalAcabamentos = acabamentosSelecionados.reduce((acc, curr) => acc + parseFloat(curr.adicional || 0), 0);
         const precoFinalUnitario = precoBaseItem + adicionalAcabamentos;
 
-        // Monta o nome com as escolhas
         let extras = acabamentosSelecionados.map(a => a.nome).join(' + ');
         let nomeNoCarrinho = p.nome;
         if(variacaoSelecionada) nomeNoCarrinho += ` (${variacaoSelecionada.nome})`;
@@ -171,22 +188,13 @@ function renderDetail(p, id) {
     loading.style.display = 'none';
     content.style.display = 'grid';
 
+    qtyInput.onchange = () => {
+        let val = parseInt(qtyInput.value);
+        if (isNaN(val) || val < 1) qtyInput.value = 1;
+        else qtyInput.value = val;
+    };
 
-// Permite que o usuário digite, mas valida o valor ao sair do campo
-qtyInput.onchange = () => {
-    let val = parseInt(qtyInput.value);
-    if (isNaN(val) || val < 1) {
-        qtyInput.value = 1;
-    } else {
-        qtyInput.value = val;
-    }
-};
-
-// Melhora a experiência mobile: ao clicar, seleciona o texto para facilitar a troca
-qtyInput.onclick = () => {
-    qtyInput.select();
-};
-
+    qtyInput.onclick = () => { qtyInput.select(); };
 }
 
 function recalcularPrecoTotal(p) {
@@ -200,7 +208,6 @@ async function loadRelatedProducts(currentProduct, currentId) {
     const grid = document.getElementById('related-grid');
     const container = document.getElementById('related-container');
     
-    // Tenta pegar subcategoria, se não tiver, tenta categoria
     const termo = (currentProduct.subcategorias && currentProduct.subcategorias.length > 0) 
                   ? currentProduct.subcategorias[0] 
                   : (currentProduct.categorias && currentProduct.categorias.length > 0) 
@@ -217,9 +224,7 @@ async function loadRelatedProducts(currentProduct, currentId) {
         let html = "";
         snap.forEach(docSnap => {
             const p = docSnap.data();
-            // Só mostra se não for o próprio produto que já está aberto
             if (docSnap.id !== currentId) {
-                // CORREÇÃO AQUI: Mudamos o link para apenas '?id=' para recarregar a mesma página com o novo ID
                 html += `
                 <div class="promo-card" onclick="window.location.href='?id=${docSnap.id}'" style="cursor:pointer">
                     <div class="promo-img" style="background-image: url('${p.imagem}')"></div>
