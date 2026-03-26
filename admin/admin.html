@@ -120,49 +120,52 @@
             </form>
         </div>
 
-        <h2 class="section-title">📦 Gestão do Catálogo</h2>
-        <div class="card-admin">
-            <h3 id="form-title">🏗️ Adicionar Produto</h3>
-            <form id="product-form">
-                <div class="flex-row">
-                    <div>
-                        <label>Nome do Produto</label>
-                        <input type="text" id="prod-name" required>
-                        
-                        <label>Categorias</label>
-                        <div id="prod-categories-container" class="multi-select-area"></div>
-                        
-                        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
-                            <div><label>Preço Base (R$)</label><input type="number" step="0.01" id="prod-price" required></div>
-                            <div><label>Ordem na Fila</label><input type="number" id="prod-order" value="99"></div>
-                        </div>
+      <h2 class="section-title">📦 Gestão do Catálogo</h2>
+<div class="card-admin">
+    <h3 id="form-title">🏗️ Adicionar Produto</h3>
+    <form id="product-form">
+        <div class="flex-row">
+            <div>
+                <label>Nome do Produto</label>
+                <input type="text" id="prod-name" required>
 
-                        <label style="color: var(--azul-edit); margin-top:15px;">✨ Acabamentos / Adicionais (Preço Extra)</label>
-                        <div id="prod-finishes-container"></div>
-                        <button type="button" id="btn-add-finish" style="width:100%; padding:8px; margin-bottom:15px; cursor:pointer; background:#e3f2fd; border:1px solid #bbdefb; border-radius:8px; color:#1976d2; font-weight:bold;">+ Novo Acabamento</button>
-                    </div>
+                <label>Link do Post no Instagram (Opcional)</label>
+                <input type="text" id="prod-insta" placeholder="https://www.instagram.com/p/...">
+                
+                <label>Categorias</label>
+                <div id="prod-categories-container" class="multi-select-area"></div>
+                
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
+                    <div><label>Preço Base (R$)</label><input type="number" step="0.01" id="prod-price" required></div>
+                    <div><label>Ordem na Fila</label><input type="number" id="prod-order" value="99"></div>
+                </div>
 
-                    <div>
-                        <label>Imagens (URLs)</label>
-                        <div id="prod-imgs-container">
-                            <div class="dynamic-field-group">
-                                <input type="text" class="prod-img-input" placeholder="URL da Imagem 1" required>
-                            </div>
-                        </div>
-                        <button type="button" id="btn-add-img-field" style="width:100%; padding:8px; margin-bottom:15px; cursor:pointer; background:#eee; border:1px solid #ccc; border-radius:8px;">+ Outra Imagem</button>
-                        
-                        <label>Variações de Seleção (Tamanho, Cor, etc.)</label>
-                        <div id="prod-variations-container"></div>
-                        <button type="button" id="btn-add-variation" style="width:100%; padding:8px; margin-bottom:15px; cursor:pointer; background:#f1f2f6; border:1px solid #ced4da; border-radius:8px; font-weight: bold;">+ Adicionar Variação</button>
+                <label style="color: var(--azul-edit); margin-top:15px;">✨ Acabamentos / Adicionais (Preço Extra)</label>
+                <div id="prod-finishes-container"></div>
+                <button type="button" id="btn-add-finish" style="width:100%; padding:8px; margin-bottom:15px; cursor:pointer; background:#e3f2fd; border:1px solid #bbdefb; border-radius:8px; color:#1976d2; font-weight:bold;">+ Novo Acabamento</button>
+            </div>
 
-                        <label>Descrição Detalhada</label>
-                        <textarea id="prod-desc" placeholder="Destaque as características técnicas..."></textarea>
+            <div>
+                <label>Imagens (URLs)</label>
+                <div id="prod-imgs-container">
+                    <div class="dynamic-field-group">
+                        <input type="text" class="prod-img-input" placeholder="URL da Imagem 1" required>
                     </div>
                 </div>
-                <button type="submit" class="btn-save" id="btn-submit-prod">Salvar Produto</button>
-                <button type="button" id="btn-cancel-edit" style="display:none; width:100%; margin-top:10px; padding:10px; background:#636e72; color:#fff; border:none; border-radius:8px; cursor:pointer;">Cancelar Edição</button>
-            </form>
+                <button type="button" id="btn-add-img-field" style="width:100%; padding:8px; margin-bottom:15px; cursor:pointer; background:#eee; border:1px solid #ccc; border-radius:8px;">+ Outra Imagem</button>
+                
+                <label>Variações de Seleção (Tamanho, Cor, etc.)</label>
+                <div id="prod-variations-container"></div>
+                <button type="button" id="btn-add-variation" style="width:100%; padding:8px; margin-bottom:15px; cursor:pointer; background:#f1f2f6; border:1px solid #ced4da; border-radius:8px; font-weight: bold;">+ Adicionar Variação</button>
+
+                <label>Descrição Detalhada</label>
+                <textarea id="prod-desc" placeholder="Destaque as características técnicas..."></textarea>
+            </div>
         </div>
+        <button type="submit" class="btn-save" id="btn-submit-prod">Salvar Produto</button>
+        <button type="button" id="btn-cancel-edit" style="display:none; width:100%; margin-top:10px; padding:10px; background:#636e72; color:#fff; border:none; border-radius:8px; cursor:pointer;">Cancelar Edição</button>
+    </form>
+</div>
 
         <div class="card-admin">
             <label>Produtos Cadastrados</label>
