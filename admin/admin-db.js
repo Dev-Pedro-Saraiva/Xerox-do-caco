@@ -109,16 +109,12 @@ window.toggleSubView = (id, show) => {
     if(el) el.style.display = show ? 'block' : 'none';
 };
 
-// Salvar/Adicionar Categoria
 document.getElementById('btn-add-category').onclick = async () => {
     const nome = document.getElementById('new-category-name').value;
     const parent = document.getElementById('parent-category-select').value;
     const ordem = parseInt(document.getElementById('new-category-order').value) || 0;
-
     if(!nome) return alert("Digite o nome da categoria");
-
     const dados = { nome, parentID: parent, ordem };
-
     try {
         if(editCatId) {
             await updateDoc(doc(db, "categorias", editCatId), dados);
@@ -136,7 +132,6 @@ window.prepararEdicaoCat = (id, nome, parent, ordem) => {
     document.getElementById('new-category-name').value = nome;
     document.getElementById('parent-category-select').value = parent;
     document.getElementById('new-category-order').value = ordem;
-    // Muda o texto do botão para indicar edição
     document.getElementById('btn-add-category').innerText = "Atualizar Categoria";
     window.scrollTo({top: document.body.scrollHeight, behavior: 'smooth'});
 };
@@ -167,10 +162,13 @@ window.prepararEdicao = async (id) => {
     if (d.exists()) {
         const p = d.data();
         editProdId = id;
-        document.getElementById('prod-name').value = p.nome;
-        document.getElementById('prod-price').value = p.precoBase;
-        document.getElementById('prod-order').value = p.ordem;
+        
+        document.getElementById('prod-name').value = p.nome || "";
+        document.getElementById('prod-insta').value = p.linkInsta || ""; 
+        document.getElementById('prod-price').value = p.precoBase || 0;
+        document.getElementById('prod-order').value = p.ordem || 99;
         document.getElementById('prod-desc').value = p.descricao || "";
+        
         document.getElementById('form-title').innerText = "✏️ Editando Produto";
         document.getElementById('btn-cancel-edit').style.display = "block";
 
@@ -196,39 +194,62 @@ window.prepararEdicao = async (id) => {
         const contImgs = document.getElementById('prod-imgs-container');
         contImgs.innerHTML = "";
         (p.imagens || [p.imagem]).forEach((url, i) => {
-            contImgs.innerHTML += `<div class="dynamic-field-group"><input type="text" class="prod-img-input" value="${url}">${i>0?'<button type="button" class="btn-remove-field" onclick="this.parentElement.remove()">✕</button>':''}</div>`;
+            contImgs.innerHTML += `
+                <div class="dynamic-field-group">
+                    <input type="text" class="prod-img-input" value="${url}">
+                    ${i > 0 ? '<button type="button" class="btn-remove-field" onclick="this.parentElement.remove()">✕</button>' : ''}
+                </div>`;
         });
 
         const contVars = document.getElementById('prod-variations-container');
         contVars.innerHTML = "";
         (p.variacoes || []).forEach(v => {
-            contVars.innerHTML += `<div class="dynamic-field-group variation-item"><input type="text" class="var-name" value="${v.nome}"><input type="number" step="0.01" class="var-price" value="${v.preco}"><button type="button" class="btn-remove-field" onclick="this.parentElement.remove()">✕</button></div>`;
+            contVars.innerHTML += `
+                <div class="dynamic-field-group variation-item">
+                    <input type="text" class="var-name" value="${v.nome}">
+                    <input type="number" step="0.01" class="var-price" value="${v.preco}">
+                    <button type="button" class="btn-remove-field" onclick="this.parentElement.remove()">✕</button>
+                </div>`;
         });
 
         const contFin = document.getElementById('prod-finishes-container');
         contFin.innerHTML = "";
         (p.acabamentos || []).forEach(a => {
-            contFin.innerHTML += `<div class="dynamic-field-group finish-item"><input type="text" class="finish-name" value="${a.nome}"><input type="number" step="0.01" class="finish-price" value="${a.adicional}"><button type="button" class="btn-remove-field" onclick="this.parentElement.remove()">✕</button></div>`;
+            contFin.innerHTML += `
+                <div class="dynamic-field-group finish-item">
+                    <input type="text" class="finish-name" value="${a.nome}">
+                    <input type="number" step="0.01" class="finish-price" value="${a.adicional}">
+                    <button type="button" class="btn-remove-field" onclick="this.parentElement.remove()">✕</button>
+                </div>`;
         });
 
         window.scrollTo({top: 0, behavior: 'smooth'});
     }
 };
 
+// --- SALVAR PRODUTO ---
 document.getElementById('product-form').onsubmit = async (e) => {
     e.preventDefault();
+    
     const cats = Array.from(document.querySelectorAll('input[name="prod-cats"]:checked')).map(cb => cb.value);
     const subs = Array.from(document.querySelectorAll('input[name="prod-subs"]:checked')).map(cb => cb.value);
     const imgs = Array.from(document.querySelectorAll('.prod-img-input')).map(i => i.value).filter(v => v);
-    const vars = Array.from(document.querySelectorAll('.variation-item')).map(div => ({ nome: div.querySelector('.var-name').value, preco: div.querySelector('.var-price').value || null }));
-    const fins = Array.from(document.querySelectorAll('.finish-item')).map(div => ({ nome: div.querySelector('.finish-name').value, adicional: div.querySelector('.finish-price').value || 0 }));
+    const vars = Array.from(document.querySelectorAll('.variation-item')).map(div => ({ 
+        nome: div.querySelector('.var-name').value, 
+        preco: div.querySelector('.var-price').value || null 
+    }));
+    const fins = Array.from(document.querySelectorAll('.finish-item')).map(div => ({ 
+        nome: div.querySelector('.finish-name').value, 
+        adicional: div.querySelector('.finish-price').value || 0 
+    }));
 
     const dados = {
         nome: document.getElementById('prod-name').value,
+        linkInsta: document.getElementById('prod-insta').value, 
         categorias: cats,
         subcategorias: subs,
         precoBase: document.getElementById('prod-price').value,
-        ordem: parseInt(document.getElementById('prod-order').value),
+        ordem: parseInt(document.getElementById('prod-order').value) || 99,
         imagens: imgs,
         imagem: imgs[0] || "",
         variacoes: vars,
@@ -236,11 +257,18 @@ document.getElementById('product-form').onsubmit = async (e) => {
         descricao: document.getElementById('prod-desc').value
     };
 
-    if (editProdId) await updateDoc(doc(db, "produtos", editProdId), dados);
-    else await addDoc(collection(db, "produtos"), dados);
-    
-    alert("Salvo!");
-    location.reload();
+    try {
+        if (editProdId) {
+            await updateDoc(doc(db, "produtos", editProdId), dados);
+            alert("Produto atualizado!");
+        } else {
+            await addDoc(collection(db, "produtos"), dados);
+            alert("Produto criado!");
+        }
+        location.reload();
+    } catch (error) {
+        alert("Erro ao salvar!");
+    }
 };
 
 window.deletarProd = async (id) => { if(confirm("Excluir?")) { await deleteDoc(doc(db, "produtos", id)); renderProducts(); } };
